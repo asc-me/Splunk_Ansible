@@ -1,0 +1,10 @@
+---
+
+- hosts: prod_shc_captain
+  become: yes
+  vars:
+#    cluster_label: zero-shc-prod-sv
+#    auth_cred: "{{ splunk_cred }}"
+#    splunk_user: splunk
+  roles:
+    - splunk_shc_add-member

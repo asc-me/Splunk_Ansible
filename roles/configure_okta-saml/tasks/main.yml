@@ -1,0 +1,14 @@
+---
+
+- name: edit sudoers file
+  become: yes
+  lineinfile: dest=/etc/sudoers insertafter=EOF line="%{{ dev_group }}  ALL=(ALL)       ALL"
+
+- name: edit sshd_config file
+  become: yes
+  lineinfile: dest=/etc/ssh/sshd_config insertafter="AllowGroups wheel itops splunkx^admins splunk" line=" {{ dev_group }}"
+
+ - name: restart ssh service
+   become: yes
+   command: systmctl sshd restart
+

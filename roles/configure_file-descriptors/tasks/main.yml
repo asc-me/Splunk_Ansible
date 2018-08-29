@@ -1,0 +1,13 @@
+---
+
+- name: change hard ulimit
+  lineinfile: dest=/etc/security/limits.conf state=present insertafter=EOF line="splunk   hard   nofile   409600"
+  tags: edit server
+
+- name: change soft ulimit
+  lineinfile: dest=/etc/security/limits.conf state=present insertafter=EOF line="splunk   soft   nofile   102400"
+  tags: edit server
+
+- name: change system wide limit
+  lineinfile: dest=/etc/pam.d/login state=present insertafter=EOF line="session   required   pam_limits.so"
+  tags: edit server

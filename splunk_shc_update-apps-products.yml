@@ -1,0 +1,79 @@
+---
+
+- hosts: products_apl
+  vars:
+    user: splunkzero
+    user_group: splunkzero
+#    ansible_user: splunk_localuser
+#    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: shcluster/apps
+    app_packages:
+# SplunkZero management apps
+      - { project: 'zero-id', repo: 'zero_idx-cluster', branch: 'PRODUCTS_SEARCH'}
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: 'PRODUCTS_SH'}
+      - { project: 'zero-id', repo: 'zero_prod', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_dsa', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: '01-gold_shc', branch: 'master'}
+      - { project: 'zero-id', repo: '01-rolemap_perm', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'non-ssl'}
+      - { project: 'zero-id', repo: '01-rolemap_products', branch: 'master'}
+# splunkbase apps
+      - { project: 'zero-sb', repo: 'slack_alerts', branch: '#ucp-alerts'}
+      - { project: 'zero-sb', repo: 'spacebridge-app', branch: 'master'}
+# custom built apps
+      - { project: 'zero-ed', repo: 'website_monitoring', branch: 'master'}
+      - { project: 'zero-ed', repo: 'ARTs', branch: 'master' }
+      - { project: 'zero-ed', repo: 'hipchat_alerts', branch: 'master' }
+      - { project: 'zero-ed', repo: 'products_qti_authorize', branch: 'master' }
+      - { project: 'zero-ed', repo: 'cuviz_status_matrix', branch: 'master' }
+      - { project: 'zero-ed', repo: 'jira', branch: 'master' }
+      - { project: 'zero-ed', repo: 'splunkqa', branch: 'master' }
+      - { project: 'zero-ed', repo: 'splunk_app_jenkins', branch: 'master' }
+      - { project: 'zero-ed', repo: 'simple_xml_examples', branch: 'master' }
+      - { project: 'zero-ed', repo: 'qti-ops', branch: 'master' }
+      - { project: 'zero-id', repo: 'Migration_UAT', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_idx-dcn', branch: 'master'}
+      - { project: 'zero-ed', repo: 'horizon_chart_app', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'network_topology', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'products_ucp_authorize', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'punchcard_app', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'status_indicator_app', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'timeline_app', branch: 'master'  }
+      - { project: 'zero-ed', repo: 'splunk_app_infrastructure', branch: 'master'}
+      - { project: 'zero-ed', repo: 'splunk_app_ucp', branch: 'master'}
+      - { project: 'zero-id', repo: 'splunk_sa_cim', branch: 'master' }
+      - { project: 'zero-ed', repo: 'splunk_entity_monitoring', branch: 'master'}
+      - { project: 'zero-ed', repo: 'is-ops', branch: 'master'}
+      - { project: 'zero-ed', repo: 'calendar_heatmap_app', branch: 'master'}
+      - { project: 'zero-ed', repo: 'cloud_operations', branch: 'master'}
+      - { project: 'zero-ed', repo: 'client_platform_monitoring', branch: 'master'}
+      - { project: 'zero-ed', repo: 'continuous_delivery', branch: 'master'}
+      - { project: 'zero-ed', repo: 'dd-ops', branch: 'master'}
+      - { project: 'zero-ed', repo: 'everywhere', branch: 'master' }
+      - { project: 'zero-ed', repo: 'p4stats', branch: 'master' }
+      - { project: 'zero-ed', repo: 'prodsec', branch: 'master' }
+      - { project: 'zero-ed', repo: 'solutionsprojtracking', branch: 'master'}
+      - { project: 'zero-ed', repo: 'splx_jenkins', branch: 'master' }
+      - { project: 'zero-ed', repo: 'splx_stash', branch: 'master' }
+      - { project: 'zero-ed', repo: 'jira2', branch: 'master' }
+      - { project: 'zero-ed', repo: 'jira3', branch: 'master' }
+      - { project: 'zero-ed', repo: 'aplura_viz_encrypted_credentials', branch: 'master'}
+      - { project: 'zero-ed', repo: 'splunk_app_perf_automation', branch: 'master'}
+      - { project: 'zero-id', repo: 'TA-SyncKVStore', branch: 'master'}
+      - { project: 'tools', repo: 'app-highview', branch: 'release'}
+      - { project: 'zero-ed', repo: 'sa-cicdreport', branch: 'master'}
+      
+#    app_decom:
+#      - { project: 'zero-id', repo: 'zero_dsa' }
+#    app_backup:
+#      - { project: 'zero-cm', repo: 'shc-apps', branch: 'backup' }
+#    message: backup
+  roles:
+    - configure_host_vars
+    - configure_git-management
+#    - { role: splunk_gen_backup-local }
+    - { role: splunk_shc_update-group-apps, when: result is changed }
+    - { role: splunk_gen_update-repo-apps, when: result is changed }
+#    - { role: splunk_gen_decom-apps, when: result is changed }
+    - { role: splunk_shc_app_deploy, when: result is changed }

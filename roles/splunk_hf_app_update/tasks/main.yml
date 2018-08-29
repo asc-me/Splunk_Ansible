@@ -1,0 +1,33 @@
+---
+
+
+# - name: enable maintenance mode
+#   shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk enable maintenance-mode -auth "{{ splunk_cred }}"
+
+- name: remove managed apps
+  become: yes
+  shell: rm -rf {{ splunk_home }}/etc/{{ deploy_dir }}/*
+# this command supports the master-apps directory and the shcluster/apps directory
+
+- name: update managed apps
+  become: yes
+  shell: cp -r {{ clone_path }}/{{ git_repo }}/* {{ splunk_home }}/etc/{{ deploy_dir }}/ 
+
+#- name: set app owner
+#  become: yes
+#  shell: chown -R splunk:splunk {{ splunk_home }}/etc/
+
+#- name: deploy app updates to cluster
+#  become: yes
+#  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk apply cluster-bundle --answer-yes --skip-validation
+  
+
+- name: set apps directory to splunk
+  file: 
+   path: '{{ splunk_home }}/etc/{{ deploy_dir }}/'
+   state: directory
+   recurse: yes
+   owner: splunk
+   group: splunk
+   mode: 0755
+  become: yes

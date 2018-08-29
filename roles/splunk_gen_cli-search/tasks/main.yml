@@ -1,0 +1,5 @@
+---
+
+- name: search via cli
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk search '{{ search_string }}' -auth "{{ splunk_cred }}"
+  become: yes

@@ -1,0 +1,5 @@
+---
+
+- name: run the installer
+  command: ansible-playbook -i {{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory {{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/install.yml
+  with_items: "{{ app_packages }}"

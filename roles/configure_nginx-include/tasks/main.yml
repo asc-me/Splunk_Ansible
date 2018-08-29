@@ -1,0 +1,13 @@
+---
+
+- name: include zero_sites repo in config load
+  lineinfile: 
+    dest: /etc/nginx/nginx.conf
+    state: present 
+    insertafter: "    include /etc/nginx/conf.d/*.conf;" 
+    line: "    include /opt/git/zero-id/zero_sites/vhosts/*.conf;"
+
+- name: reload nginx config
+  shell: systemctl restart nginx
+  become: yes
+

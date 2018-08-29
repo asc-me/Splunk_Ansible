@@ -1,0 +1,11 @@
+---
+
+- hosts: products_shc
+  become: yes
+  vars:
+#    cluster_label: zero-shc-prod-sv
+#    auth_cred: "{{ splunk_cred }}"
+#    splunk_user: splunk
+  roles:
+    - splunk_shc_init
+    - splunk_gen_restart

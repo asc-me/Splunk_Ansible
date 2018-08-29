@@ -1,0 +1,16 @@
+---
+
+- name: stop root prem splunk service
+  command: /opt/splunk/bin/splunk stop
+
+- name: chown splunk directory
+  file: path=/opt/splunk/ state=directory owner=splunk group=splunk recurse=yes
+  tags: ownership
+
+- name: restart splunk as splunk user
+  command: sudo -H -u root /opt/splunk/bin/splunk enable boot-start -user splunk
+  tags: restart
+  
+- name: restart splunk as splunk user
+  command: sudo -H -u splunk /opt/splunk/bin/splunk start
+  tags: restart

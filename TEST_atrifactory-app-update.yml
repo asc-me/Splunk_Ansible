@@ -1,0 +1,23 @@
+---
+
+- hosts: zero_awx
+  become: yes
+  vars:
+    user: splunk
+    user_group: wheel
+    ansible_user: splunk
+    ansible_ssh_private_key_file: ~/.ssh/splunk.key
+# target playbook for changes
+    playbook: TEST_app-update.yml
+# ansible git repo
+    app_packages:
+      - {"project": "zero-id", "repo": "zero_prod", "branch": "master"}
+      - {"project": "zero-id", "repo": "zero_auth_saml", "branch": "master"}
+      - { project: 'zero-id', repo: 'splunkzero_ansible', branch: 'master' }
+# new applications to deploy
+    new_apps:
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master' }
+  roles:
+    - configure_host_vars
+    - configure_git-management
+    #- ansible_edit-playbook

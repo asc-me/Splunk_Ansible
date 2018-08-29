@@ -1,0 +1,122 @@
+---
+
+
+- name: install pip
+  shell: apt-get install python-pip 
+  ignore_errors: yes
+  become: yes
+
+- name: upgrade pip
+  shell: pip install --upgrade pip setuptools
+  ignore_errors: yes
+  become: yes
+
+- name: Install virtualenv
+  shell: pip install virtualenv
+  ignore_errors: yes
+  become: yes
+
+- name: Create a new virtual environment
+  shell: virtualenv venv
+  ignore_errors: yes
+
+- name: Activate and enter the new virtual environment
+  shell: source venv/bin/activate
+  ignore_errors: yes
+
+- name: Update the package manager and resync package index files 
+  shell: apt-get update
+  ignore_errors: yes
+  become: yes
+
+- name: install third party dependencie 
+  shell: apt-get install -y libxml2-dev libxslt-dev lib32z1-dev python-lxml
+  ignore_errors: yes
+
+- name: download tarball
+  shell: weget -O splunk-appinspect-1.5.0.139.tar.gz "http://dev.splunk.com/goto/appinspectdownload"
+  ignore_errors: yes
+  become: yes
+
+- name: install tarball
+  shell: pip install splunk-appinspect-1.5.0.139.tar.gz 
+  ignore_errors:: yes
+  become: yes
+
+
+
+
+
+# - name: copy splunk installer to target
+#   copy: src={{ installer }} dest=/home/{{ user }}/
+#   tags: copy installer
+
+# - name: copy splunk installer to target
+#   command: wget -O {{ installer }} {{ url }} 
+#   tags: copy installer
+
+# - name: install splunk 
+#   become: yes
+#   command: rpm -Uvh /home/{{ user }}/{{ installer }} --force
+#   tags: splunk install
+
+# - name: start splunk
+#   shell: sudo -H -u {{ splunk_user}} {{ splunk_home }}/bin/splunk start --accept-license --answer-yes
+#   ignore_errors: yes
+#   become: yes
+#   tags: splunk start
+
+# - name: enable splunk @ boot
+#   become: yes
+#   shell: cd {{ splunk_home }}/ && bin/splunk enable boot-start -user {{ splunk_user }}
+#   tags: splunk boot
+
+# - name: change admin password
+#   command: /opt/splunk/bin/splunk edit user admin -password password -role admin -auth admin:changeme
+#   tags: splunk login
+
+# - name: clean up home dir
+#   command: rm -rf /home/{{ user }}/{{ installer }}
+#   tags: delete installer
+
+# - name: Splunk opt install check
+#   command: /opt/splunk/bin/splunk version
+#   register: splunk_installed
+#   ignore_errors: yes
+#   tags: splunk
+
+# - name: debug task
+#   debug: var=splunk_installed.failed
+
+# - name: send splunk_installer
+#   copy: src=/Users/acain/Desktop/splunk-6.2.5.rpm dst=/Home/acain/splunk-6.2.5.rpm
+#   register: copy_installer
+#   when: splunk_installed.failed = true
+
+# - name: Install Splunk 
+#   command: rpm -Uvh splunk-6.2.5.rpm
+#   when: splunk_download.stat.exists == true
+#   register: splunk_install_status
+#   changed_when: false
+#   tags: splunk
+
+# - name: Splunk start service
+#   shell: /opt/splunkforwarder/bin/splunk start --accept-license
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# - name: Splunk enable start on boot
+#   shell: /opt/splunkforwarder/bin/splunk enable boot-start
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# dependencies:
+#   - { role: common, some_parameter: 3 }
+#   - { role: apache, port: 80 }
+#   - { role: postgres, dbname: blarg, other_parameter: 12 }
+
+#splunkforwarder-6.2.5-272645-Linux-x86_64.tgz
+#splunk start --accept-license"
+#splunkforwarder/bin/splunk --accept-license --version

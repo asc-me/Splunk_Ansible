@@ -1,0 +1,20 @@
+---
+
+- hosts: sh_prodds
+  vars:
+    user: acain
+    team: prodds
+    dev_group: SG-IT-SplunkZero-PERM-prodds-DEV
+    pwr_group: SG-IT-SplunkZero-PERM-prodds-PWR
+    usr_group: SG-IT-SplunkZero-PERM-aprodds-USR
+    sso_url: https://splunk.okta.com/app/splunkinc_splunkxsearchheadcluster_1/exk174jwk04smayDq1d8/sso/saml
+    slo_url: https://splunk.okta.com/app/splunkinc_splunkxsearchheadcluster_1/exk174jwk04smayDq1d8/slo/saml
+  become: yes
+  roles:
+    - configure_shell_access
+    - splunk_sh_conf_dev-sh
+    - configure_git-management
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - { role: splunk_gen_decom-apps, when:  }
+    - splunk_gen_conf_auth-saml
+    - splunk_gen_restart

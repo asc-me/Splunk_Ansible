@@ -1,0 +1,15 @@
+---
+
+- hosts: stage_shc_dp
+  vars:
+    user: acain
+    splunk_user: splunk
+    deploy_dir: shcluster/apps
+    apps: [ 'splunkzero_admin' ]
+  roles:
+    - git_directory
+    - git_clone-repo
+    - splunk_shc_app_update
+    - splunk_shc_user_update
+    - configure_splunkzero-apps
+    - splunk_shc_app_deploy

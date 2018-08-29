@@ -1,0 +1,33 @@
+---
+
+- hosts: prod_shc_dp
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: shcluster/apps
+    app_packages:
+      - { project: 'zero-cm', repo: 'search_apps', branch: 'master'}
+      - { project: 'zero-id', repo: '01-gold_shc', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_prod', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_xshc_dep', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_idx-cluster', branch: 'GEN-PRD_SEARCH'}
+      - { project: 'zero-sb', repo: 'SA-ldapsearch', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_nix', branch: 'sz-monitor'}
+      - { project: 'zero-sb', repo: 'analysis_of_splunkbase_apps', branch: 'SHC'}
+#    app_decom:
+#      - { project: 'zero-id', repo: 'zero_dsa' }
+#    app_backup:
+#      - { project: 'zero-cm', repo: 'shc-apps', branch: 'backup' }
+#    message: backup
+  roles:
+    - configure_host_vars
+    - configure_git-management
+#    - { role: splunk_gen_backup-local }
+    - { role: splunk_shc_update-group-apps, when: result|changed }
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+#    - { role: splunk_gen_decom-apps, when: result|changed }
+    - { role: splunk_shc_app_deploy, when: result|changed }

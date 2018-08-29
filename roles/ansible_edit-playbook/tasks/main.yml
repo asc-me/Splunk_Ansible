@@ -1,0 +1,58 @@
+---
+
+- name: reset attributes for git clone path
+  become: yes
+  file:
+    path: '{{ clone_path }}'
+    mode: 0777
+    state: directory
+    recurse: yes
+
+- name: set git config email
+  git_config:
+    name: user.email
+    value: 'zero@splunk.com'
+
+- name: set git config username
+  git_config:
+    name: user.name
+    value: "Derpy Pony"
+
+#- name: check that new apps are properly defined
+- name: set ansible repo path to var
+  set_fact:
+    target_playbook: '{{ clone_path }}/{{ item.project }}/{{ item.repo }}/{{ playbook }}'
+  with_items: "{{ app_packages }}"
+
+# - name: add app stanzas to target playbook
+#   lineinfile:
+#     dest: '{{ target_playbook }}'
+#     insertafter: "app_packages:"
+#     line: '      - {{ item }}'
+#   with_items: "{{ apps_json }}"
+
+- name: add app stanzas to target playbook
+  lineinfile:
+    dest: '{{ target_playbook }}'
+    insertafter: "app_packages:"
+    line: '      - {{ item | to_json }}'
+  with_items: "{{ new_apps }}"
+  register: result
+
+# must use shell until git command supports commit/push
+- name: add playbook to working copy
+  shell: cd {{ clone_path }}/{{ item.project }}/{{ item.repo }} && sudo -u {{ user }} git add {{ playbook }}
+  with_items: "{{ app_packages }}"
+  when: result.changed == true
+
+# must use shell until git command supports commit/push
+- name: commit changes to branch
+  shell: cd {{ clone_path }}/{{ item.project }}/{{ item.repo }} && sudo -u {{ user }} git commit -m "Edited {{ playbook }} to include these apps {{ new_apps }}"
+  with_items: "{{ app_packages }}"
+  when: result.changed == true
+
+# must use shell until git command supports commit/push 
+- name: push changes to remote
+  shell: cd {{ clone_path }}/{{ item.project }}/{{ item.repo }} && sudo -u {{ user }} git push
+  with_items: "{{ app_packages }}"
+  when: result.changed == true

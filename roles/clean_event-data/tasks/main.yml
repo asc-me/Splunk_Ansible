@@ -1,0 +1,13 @@
+---
+
+- name: stop splunk service
+  command: /opt/splunk/bin/splunk stop
+  tags: splunk stop
+
+- name: delete all index data
+  command: /opt/splunk/bin/splunk clean eventdata --answer-yes
+  tags: splunk clean
+
+# - name: restart splunk service
+#   command: /opt/splunk/bin/splunk start
+#   tags: splunk start

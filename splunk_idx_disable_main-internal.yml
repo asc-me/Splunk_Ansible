@@ -1,0 +1,21 @@
+---
+
+- hosts: internal_apl
+  serial: 10
+  vars:
+    user: splunk_localuser
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    splunk_user: splunk
+#    auth_cred: "{{ splunk_cred }}"
+#    installer: splunk-7.0.0-cf807dd96413-linux-2.6-x86_64.rpm 
+#    url: 'http://releases.splunk.com/dl/minty_builds/7.0.0-20170817-0000/splunk-7.0.0-cf807dd96413-linux-2.6-x86_64.rpm'
+  become: yes
+  roles:
+#    - splunk_gen_update-core
+    - splunk_idx_disable_main
+    
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089

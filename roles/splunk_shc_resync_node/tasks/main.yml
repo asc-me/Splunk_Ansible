@@ -1,0 +1,5 @@
+---
+
+- name: destructive resync
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk resync shcluster-replicated-config -auth "{{ splunk_cred }}"
+  ignore_errors: yes

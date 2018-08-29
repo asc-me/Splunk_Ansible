@@ -1,0 +1,22 @@
+---
+
+- name: update managed apps (1 of 3)
+  become: yes
+  file: path={{ splunk_home }}/etc/{{ deploy_dir }}/{{ item }} state=absent
+  with_items: "{{splunk_apps}}"
+  ignore_errors: yes
+
+- name: update managed apps (2 of 3)
+  become: yes
+  shell: cp -r {{ clone_path }}/{{ item }} {{ splunk_home }}/etc/{{ deploy_dir }}/ 
+  with_items: "{{splunk_apps}}"
+
+# - name: update managed apps (3 of 3)
+#   become: yes
+#   file: 
+#    path: '{{ splunk_home }}/etc/{{ deploy_dir }}/'
+#    owner: splunk
+#    group: splunk
+#    mode: 0777
+#    state: directory
+#    recurse: yes

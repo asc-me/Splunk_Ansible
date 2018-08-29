@@ -1,0 +1,13 @@
+---
+
+- name: remove backup directory
+  become: yes
+  file:
+    path: '{{ backup_path }}'
+    state: absent
+
+- name: remove backup tar
+  become: yes
+  file:
+    path: '{{ splunk_home }}/{{ tar_name }}.tar.gz'
+    state: absent

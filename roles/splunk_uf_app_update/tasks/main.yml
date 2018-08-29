@@ -1,0 +1,29 @@
+---
+
+- name: stop deploy server
+  become: yes
+  shell: cd {{ splunk_home }} && bin/splunk stop
+
+- name: remove old checkout
+  become: yes
+  shell: rm -rf {{ splunk_home }}/etc/deployment-apps/*
+
+- name: Copy repo apps to deploy directory
+  become: yes
+  shell: cp -r {{ splunk_home }}/repo/{{ repo }}/apps/* {{ splunk_home }}/etc/deployment-apps/
+
+- name: remove old serverclass.conf
+  become: yes
+  shell: rm -rf {{ splunk_home }}/etc/system/local/serverclass.conf
+
+- name: Copy repo serverclass to system local
+  become: yes
+  shell: cp -r {{ splunk_home }}/repo/{{ repo }}/system/local/serverclass.conf {{ splunk_home }}/etc/system/local/
+
+- name: chown files to splunk:splunk
+  become: yes
+  shell: chown -R splunk:splunk {{ splunk_home }}/etc/
+
+- name: start deploy server
+  become: yes
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk start

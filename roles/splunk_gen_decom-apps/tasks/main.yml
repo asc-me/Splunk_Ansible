@@ -1,0 +1,27 @@
+---
+
+- name: decom app from splunk dir
+  become: yes
+  file: 
+    path: '{{ splunk_home }}/etc/{{ deploy_dir }}/{{ item.repo }}'
+    state: absent
+  with_items: "{{ app_decom }}"
+  ignore_errors: yes
+
+- name: decom git repo from server
+  become: yes
+  file: 
+    path: '{{ clone_path }}/{{ item.project }}/{{ item.repo }}'
+    state: absent
+  with_items: "{{ app_decom }}"
+  ignore_errors: yes
+
+# - name: update managed apps (3 of 3)
+#   become: yes
+#   file: 
+#    path: '{{ splunk_home }}/etc/{{ deploy_dir }}/'
+#    owner: splunk
+#    group: splunk
+#    mode: 0777
+#    state: directory
+#    recurse: yes

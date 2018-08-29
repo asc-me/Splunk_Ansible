@@ -1,0 +1,9 @@
+---
+
+- hosts: stage_shc
+  sudo: yes
+  vars:
+    splunk_user: splunk
+  roles:
+    - configure_mail-server
+    - splunk-reboot

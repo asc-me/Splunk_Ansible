@@ -1,0 +1,6 @@
+---
+
+- hosts: licenser
+  sudo: yes
+  roles:
+    - git-prep

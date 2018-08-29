@@ -1,0 +1,20 @@
+---
+
+- hosts: products_shc
+  become: yes
+  vars:
+    # user: splunk
+    # user_group: wheel
+    # ansible_user: splunk
+    # ansible_ssh_private_key_file: ~/.ssh/splunk.key
+# target playbook for changes
+    jmlc_dir: /opt/jmlc
+# ansible git repo
+    app_packages:
+      - { project: 'zero-id', repo: 'splunkzero_ansible', branch: 'master' }
+# new applications to deploy
+    new_apps:
+# use the sample below to update apps
+#      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master' }
+  roles:
+    - splunk_gen_triage_jmlc-collect

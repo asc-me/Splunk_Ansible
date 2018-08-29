@@ -1,0 +1,8 @@
+---
+
+- name: start splunk
+  shell: sudo -H -u {{ splunk_user}} {{ splunk_home }}/bin/splunk start --accept-license --answer-yes
+  ignore_errors: yes
+  become: yes
+  tags: splunk start
+

@@ -1,0 +1,19 @@
+---
+
+# credentials
+vault_srv_ad-pass: ad-service-password
+# set for < splunk 7.1
+vault_splk_dft_cred: admin:changeme
+vault_auth_cred_old: admin:some_old_pass
+vault_auth_cred_new: admin:some_new_pass
+vault_splk_adm: admin
+vault_splk_adm_new_pw: some_new_pass
+vault_sys_ans_usr: IT-Automation-Service-User
+vault_sys_ans_usr_pw: some_ssh-password
+
+# SHC stack secrets
+vault_genprd_shckey: shc-pass4symm-password
+vault_itsi_shckey: shc-pass4symm-password
+vault_s0prdcts_shckey: shc-pass4symm-password
+vault_s0mrkt_shckey: shc-pass4symm-password
+vault_s0shw_shckey: shc-pass4symm-password

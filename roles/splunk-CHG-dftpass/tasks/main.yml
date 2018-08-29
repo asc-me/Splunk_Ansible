@@ -1,0 +1,6 @@
+---
+
+- name: change admin password
+  command: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk edit user {{ splunk_local_user_name }} -password {{ splunk_local_user_pass }} -role admin -auth "{{ splunk_dft_cred }}"
+  tags: splunk login
+  ignore_errors: yes

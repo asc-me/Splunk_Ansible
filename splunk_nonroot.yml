@@ -1,0 +1,6 @@
+---
+
+- hosts: dev_sh_update_group
+  sudo: yes
+  roles:
+    - splunk-nonroot

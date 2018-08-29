@@ -1,0 +1,8 @@
+---
+
+- hosts: opsh_itops
+  vars:
+    user: fallen
+
+  roles:
+    - configure_app-inspect

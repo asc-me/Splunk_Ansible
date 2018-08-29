@@ -1,0 +1,55 @@
+---
+
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ splunk_home }}/backup_{{ ansible_date_time.date }}'
+    state: directory
+    owner: splunk
+    group: splunk
+    mode: 0755
+  register: create_folder
+
+- name: set backup_dir var
+  set_fact:
+    backup_dir: "backup_{{ ansible_date_time.date }}"
+    backup_path: "{{ create_folder.path }}"
+
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ backup_path }}/base_apps'
+    state: directory
+    owner: splunk
+    group: splunk
+
+- name: create backup directory
+  become: yes
+  file:
+    path: '{{ backup_path }}/nonbase_apps'
+    state: directory
+    owner: splunk
+    group: splunk
+
+# - name: create backup directory
+#   become: yes
+#   file:
+#     path: '{{ backup_dir }}/users'
+#     state: directory
+#     owner: splunk
+#     group: splunk
+
+
+
+
+# - name: backup search cluster app and user directories
+#   become: yes
+#   command: cp -r {{ splunk_home }}/etc/shcluster {{ splunk_home }}/backup/
+#
+# - name: backup index cluster master app directory
+#   become: yes
+#   command: cp -r {{ splunk_home }}/etc/master-apps {{ splunk_home }}/backup/
+#
+# - name: backup deployment apps
+#   become: yes
+#   command: cp -r {{ splunk_home }}/etc/deployment-apps {{ splunk_home }}/backup/

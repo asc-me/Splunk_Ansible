@@ -1,0 +1,17 @@
+---
+
+- name: edit server.conf file 1
+  lineinfile: dest={{ splunk_home }}/etc/system/local/server.conf regexp="pass4SymmKey\s=\s[^\s\n]+" state=absent 
+  tags: edit server
+
+- name: edit server.conf file 2
+  lineinfile: dest={{ splunk_home }}/etc/system/local/server.conf state=present insertafter=EOF line="[shclustering]"
+  tags: edit server
+
+- name: edit server.conf file 3
+  lineinfile: dest={{ splunk_home }}/etc/system/local/server.conf state=present insertafter=EOF line="pass4SymmKey = AlAImQqD$9YY"
+  tags: edit server
+
+- name: restart splunk service
+  command: {{ splunk_home }}/bin/splunk restart
+  tags: restart splunk

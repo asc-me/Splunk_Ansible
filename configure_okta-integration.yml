@@ -1,0 +1,6 @@
+---
+
+- hosts: prod_shc
+  sudo: yes
+  roles:
+    - configure_okta-integration

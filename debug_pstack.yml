@@ -1,0 +1,10 @@
+---
+
+- hosts: dev_shc_dp
+  vars:
+    user: acain
+    issue: empty
+    store_path: Box\ Sync/Splunk\(x\)\ External\ Files/diags/
+  sudo: yes
+  roles:
+    - debug_pstack

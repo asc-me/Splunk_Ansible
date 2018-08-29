@@ -1,0 +1,6 @@
+---
+
+- hosts: prod_shc
+  sudo: yes
+  roles:
+    - unlink_shc_node

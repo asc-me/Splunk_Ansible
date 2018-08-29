@@ -1,0 +1,5 @@
+---
+
+- name: disable maintenance mode
+  become: yes
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk disable maintenance-mode -auth "{{ splunk_cred }}"

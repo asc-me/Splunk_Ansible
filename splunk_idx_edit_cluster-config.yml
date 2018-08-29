@@ -1,0 +1,10 @@
+---
+
+- hosts: zero_int_idx
+  serial: 4
+  vars:
+    user: acain
+    c_config_key: [ 'secret' ]
+    c_config_value: [ 'JX8$HyI&q5@r']
+  roles:
+    - splunk_idx_edit_cluster-config

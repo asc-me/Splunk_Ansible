@@ -1,0 +1,19 @@
+---
+
+- hosts: stage_idx_test
+  serial: 4
+  vars:
+    user: acain
+    # retired playbook variable
+    # splunk_user: root
+    auth_cred: "{{ splunk_cred }}"
+    installer: splunk-6.4.3.tgz
+    url: http://releases.splunk.com/released_builds/6.4.3/splunk/linux/splunk-6.4.3-b03109c2bad4-Linux-x86_64.tgz
+    clean_etc: [ 'anonymizer', 'init.d', 'modules', 'openldap', 'system/bin', 'system/default', 'system/lookups', 'system/metadata', 'system/README', 'system/static', 'log-*.cfg', 'copyright.txt', 'datetime.xml', 'findlogs.ini', 'prettyprint.xsl', 'regid.*', 'searchLanguage.xml', 'splunk*' ]
+    # the following apps are based from 6.5.0 and 6.4 note: instrumentation and monitoring apps
+    apps: [ 'alert_webhook', 'alert_logevent', 'appsbrowser', 'framework', 'gettingstarted', 'introspection_generator_addon', 'launcher', 'learned', 'legacy', 'sample_app', 'search', 'splunk_archiver', 'splunk_httpinput', 'splunk_monitoring_console', 'splunk_management_console', 'splunk_instrumentation', 'SplunkForwarder', 'SplunkLightForwarder', 'user-prefs' ]
+  roles:
+    # - splunk_idx_enable_main
+    - splunk_gen_backup
+    - splunk_gen_rollback
+    # - splunk_idx_enable_main

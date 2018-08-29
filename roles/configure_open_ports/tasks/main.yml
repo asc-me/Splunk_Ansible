@@ -1,0 +1,16 @@
+---
+
+- name: open web port
+  command: firewall-cmd --zone=public --add-port={{item}}/tcp --permanent
+  with_items: "{{splunk_ports}}"
+
+#- name: restart network service
+#  command: systemctl restart network.service
+## systemctl is a centos 7 command
+#  tags: restart firewalld
+
+- name: restart firewall service
+  command: systemctl restart firewalld.service
+## systemctl is a centos 7 command
+  tags: restart firewalld
+

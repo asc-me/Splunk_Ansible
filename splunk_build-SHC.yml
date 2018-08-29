@@ -1,0 +1,50 @@
+---
+
+- hosts: zero_showcase_shc
+  vars:
+    user: acain
+    user_group: domain^users
+########## vars for install #########
+    installer: splunk-7.0.0-c8a78efdd40f-linux-2.6-x86_64.rpm
+    url: 'https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.0.0&product=splunk&filename=splunk-7.0.0-c8a78efdd40f-linux-2.6-x86_64.rpm&wget=true'
+########## vars for apps ##########
+#    deploy_dir: apps
+    deploy_dir: apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: '_SH'}
+########## vars for auth ##########
+#    dev_group: SG-IT-SplunkZero-PERM-appinspect-DEV
+#    pwr_group: SG-IT-SplunkZero-PERM-appinspect-PWR
+#    usr_group: DG-IT-SplunkZero-PERM-appinspect-USR
+# this variable is the AD group modifier for search head perms
+#    team: sgs
+#    okta_domain: splunk.okta.com
+#    okta_chic_key: splunkinc_splunkzeroglobalsecurityes_1/exk1cu1bfzja1dtXL1d8
+#    uri: configured in host file
+  become: yes
+  roles:
+    - splunk-update
+    - splunk-CHG-dftpass
+    - configure_open_ports
+    - splunk_gen_conf-lic-slave
+#    - splunk_gen_conf_auth-saml
+#    - configure_LDAP
+    - configure_THP
+    - configure_file-descriptors
+    - configure_git-management
+    - splunk_gen_update-repo-apps
+#    - splunk_gen_app-update
+    - configure_shell_user_nopass
+#    - configure_shell_access
+#    - splunk_sh_conf_dev-sh
+#    - splunk_sh_add_search-peers-cluster
+#    - splunk_sh_add_search-peers-stand-alone
+    - splunk_gen_restart
+
+
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089
+
+#- include: splunk_sh_install-itsi.yml

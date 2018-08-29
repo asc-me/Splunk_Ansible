@@ -1,0 +1,24 @@
+---
+
+- name: check thp_enabled config
+  shell: tail /sys/kernel/mm/transparent_hugepage/enabled | grep [never]
+  register: thp_enabled
+
+- name: verify thp_enabled is [never]
+  shell: echo never > /sys/kernel/mm/transparent_hugepage/enabled
+  when: thp_enabled.stdout.find('[never]') != 1
+
+- name: check thp_enabled config
+  shell: tail /sys/kernel/mm/transparent_hugepage/defrag | grep [never]
+  register: thp_defrag
+
+- name: verify thp_defrag is [never]
+  shell: echo never > /sys/kernel/mm/transparent_hugepage/defrag
+  when: thp_defrag.stdout.find('[never]') != 1
+
+- name: Disable THP at boot start
+  lineinfile:
+    dest: /etc/rc.d/rc.local
+    mode: 0755
+    state: present
+    line: "{{ lookup('file', 'thp-disable-rc-local') }}"  

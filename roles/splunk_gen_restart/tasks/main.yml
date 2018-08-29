@@ -1,0 +1,14 @@
+---
+
+# - name: stop splunk service
+#   become: yes
+#   shell: cd {{ splunk_home }}/ && bin/splunk stop
+
+# - name: chown dir
+#   become: yes
+#   shell: chown -R splunk:splunk {{ splunk_home }}
+
+- name: restart splunk service
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk restart
+  ignore_errors: yes

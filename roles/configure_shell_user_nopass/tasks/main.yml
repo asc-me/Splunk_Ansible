@@ -1,0 +1,27 @@
+---
+
+- name: create new user
+  become: yes
+  user: name={{ new_user }} password={{ new_pass }} group=wheel
+
+- name: create .ssh directory
+  file: path=/home/{{ new_user }}/.ssh state=directory mode=0740 owner={{ new_user }} group=wheel
+
+- name: place authorized key file
+  copy: src=authorized_keys dest=/home/{{ new_user }}/.ssh/authorized_keys owner={{ new_user }} group=wheel mode=0600
+
+- name: lock down account in sshd_config file (1 of 2)
+  become: yes
+  lineinfile: dest=/etc/ssh/sshd_config insertafter=EOF line="Match User {{ new_user }}"
+
+- name: lock down account in sshd_config file (1 of 2)
+  become: yes
+  lineinfile: dest=/etc/ssh/sshd_config insertafter=EOF line="PasswordAuthentication no"
+
+# - name: edit sudoers file for non-password auth
+#   become: yes
+#   lineinfile: dest=/etc/sudoers insertafter=EOF line="%wheel ALL=(ALL) NOPASSWD: ALL"
+
+- name: restart ssh service
+  become: yes
+  command: systemctl restart sshd

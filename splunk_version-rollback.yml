@@ -1,0 +1,11 @@
+---
+
+- hosts: prod_idx
+  # gather_facts: no
+  vars:
+    user: acain
+    installer: splunk-6.3.3.tgz
+    url: http://releases/dl/galaxy_builds/6.4.0-20160301-1300/splunk-6.4.0-21fe9f0b2440-linux-2.6-x86_64.rpm
+  sudo: yes
+  roles:
+    - splunk_version-rollback

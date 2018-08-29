@@ -1,0 +1,22 @@
+---
+
+- hosts: products_shc
+#  serial: 4
+  become: yes
+  vars:
+    user: splunkzero
+    user_group: splunkzero
+#    ansible_user: splunkzero
+#    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: 'PRODUCTS_SH'}
+#    app_decom:
+#      - { project: 'zero-id', repo: 'zero_app_mon' }
+  roles:
+    - configure_git-management
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+#    - { role: splunk_gen_decom-apps, when: result|changed }
+    - { role: splunk_gen_restart, when: result|changed }
+# listed apps from ITSI 2.6.0 make sure to add apps that are added in later builds
+#    clustered_splunk_apps: [ 'SA-ITSI-CustomModuleViz', 'DA-ITSI-STORAGE', 'DA-ITSI-APPSERVER', 'DA-ITSI-DATABASE', 'DA-ITSI-EUEM', 'DA-ITSI-LB', 'DA-ITSI-OS', 'DA-ITSI-VIRTUALIZATION', 'DA-ITSI-WEBSERVER', 'DA-ITSI-WebServices', 'itsi', 'SA-IndexCreation', 'SA-ITOA', 'SA-ITSI-ATAD', 'SA-ITSI-Licensechecker', 'SA-ITSI-MetricAD', 'SA-UserAccess', 'Splunk_SA_CIM', 'Splunk_TA_webservices' ]

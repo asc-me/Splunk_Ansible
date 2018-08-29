@@ -1,0 +1,59 @@
+---
+
+- name: check that backup folder exists
+  stat:
+    path: "{{ backup_path }}"
+  register: backup_present
+
+- name: backup non-base apps
+  become: yes
+  synchronize:
+    src: '{{ splunk_home }}/etc/apps/{{ item }}'
+    dest: '{{ backup_path }}/nonbase_apps/{{ item }}'
+    rsync_path: "su -c rsync"
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True
+  with_items:
+    - "{{ nonbase_apps }}"
+
+- name: check that base apps have local dirs
+  stat:
+    path: "{{ splunk_home }}/etc/apps/{{ item }}/local"
+  with_items: '{{ base_apps }}'
+  register: base-local
+  ignore_errors: yes
+
+- debug:
+    var: base-local.stat
+
+- name: check that base apps have meta dirs
+  stat:
+    path: "{{ splunk_home }}/etc/apps/{{ item }}/metadata"
+  with_items: '{{ base_apps }}'
+  register: base-meta
+  ignore_errors: yes
+
+- debug:
+    var: base-meta.stat
+
+- name: backup base app local dirs
+  become: yes
+  synchronize:
+    src: '{{ splunk_home }}/etc/apps/{{ item }}/local'
+    dest: '{{ backup_path }}/base_apps/{{ item }}/local'
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True
+  with_items:
+    - "{{ base_apps }}"
+  ignore_errors: yes
+
+- name: backup base app metadata dirs
+  become: yes
+  synchronize:
+    src: '{{ splunk_home }}/etc/apps/{{ item }}/metadata'
+    dest: '{{ backup_path }}/base_apps/{{ item }}/metadata'
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True
+  with_items:
+    - "{{ base_apps }}"
+  ignore_errors: yes

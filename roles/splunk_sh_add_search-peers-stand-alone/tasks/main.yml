@@ -1,0 +1,7 @@
+---
+
+- name: add search peer
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk add search-server -host {{ item.0 }}:{{ item.1 }} -auth "{{ splunk_cred }}" -remoteUsername {{ remote_user }} -remotePassword {{ remote_password }}
+  with_nested:
+   - "{{ uri }}"
+   - "{{ mgmt_port }}"

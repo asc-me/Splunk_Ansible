@@ -1,0 +1,52 @@
+---
+
+# - name: copy the ssh config file
+#   become: no
+#   copy: src=config dest=/home/{{ user }}/.ssh/config owner={{ user }} group=domain^users mode=600
+
+# - name: copy the known_hosts file
+#   become: no
+#   copy: src=known_hosts dest=/home/{{ user }}/.ssh/known_hosts owner={{ user }} group=domain^users mode=600
+
+- name: make repo directory
+  become: yes
+  file: path={{ splunk_home }}/repo/ state=directory mode=0777 owner=splunk group=splunk 
+
+- name: copy stash access key
+  become: no
+  copy: src=/Users/{{ user }}/.ssh/id_rsa dest=/home/{{ user }}/.ssh/git owner={{ user }} group=domain^users mode=0600
+  tags: copy key
+
+- name: clone into repo
+  become: no
+  shell: cd {{ splunk_home }}/repo/ && git clone ssh://git@git.splunk.com:7999/zero-cm/{{ repo }}.git -b {{ branch }}
+
+- name: remove stash access key
+  become: yes
+  file: path=/home/{{ user }}/.ssh/git state=absent
+  tags: delete key
+
+# - name: update managed apps (1 of 5) - stop splunk
+#   become: yes
+#   shell: sudo -H -u splunk /opt/splunk/bin/splunk stop
+
+# - name: update managed apps (2 of 5) - remove apps from deploy directory
+#   become: yes
+#   file: path=/opt/splunk/etc/{{ apps_dir }}/* state=absent
+#   ignore_errors: yes
+
+# - name: update managed apps (3 of 5) - copy new apps into deploy directory
+#   become: yes
+#   shell: cp -r /opt/splunk/repo/{{ repo }}{{ sub_dir }} /opt/splunk/etc/{{ apps_dir }}/ 
+
+# - name: update managed apps (4 of 5) - change ownership of all pulled files
+#   become: yes
+#   shell: chown -R splunk:splunk /opt/splunk/etc/{{ apps_dir }}/
+
+# - name: update managed apps (5 of 5) - start splunk
+#   become: yes
+#   shell: sudo -H -u splunk /opt/splunk/bin/splunk start
+
+# - name: remove repo directory
+#   become: yes
+#   file: path=/opt/splunk/repo/ state=absent

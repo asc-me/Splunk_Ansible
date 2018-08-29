@@ -1,0 +1,65 @@
+---
+
+- name: copy and extract splunk installer to target
+  unarchive:
+    copy: no
+    src: {{ url }}
+    dest: /home/{{ user }}/
+    owner: splunk
+    group: splunk
+
+- name: make splunk dir
+  file:
+    path: /opt/old-splunk/
+    state: directory
+    group: splunk
+    owner: splunk
+
+- name: stop current splunk
+  command: /opt/splunk/bin/splunk stop
+
+- name: place splunk in /opt
+  command: mv /opt/splunk/* /opt/old-splunk/
+
+
+# - name: Splunk opt install check
+#   command: /opt/splunk/bin/splunk version
+#   register: splunk_installed
+#   ignore_errors: yes
+#   tags: splunk
+
+# - name: debug task
+#   debug: var=splunk_installed.failed
+
+# - name: send splunk_installer
+#   copy: src=/Users/acain/Desktop/splunk-6.2.5.rpm dst=/Home/acain/splunk-6.2.5.rpm
+#   register: copy_installer
+#   when: splunk_installed.failed = true
+
+# - name: Install Splunk
+#   command: rpm -Uvh splunk-6.2.5.rpm
+#   when: splunk_download.stat.exists == true
+#   register: splunk_install_status
+#   changed_when: false
+#   tags: splunk
+
+# - name: Splunk start service
+#   shell: /opt/splunkforwarder/bin/splunk start --accept-license
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# - name: Splunk enable start on boot
+#   shell: /opt/splunkforwarder/bin/splunk enable boot-start
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# dependencies:
+#   - { role: common, some_parameter: 3 }
+#   - { role: apache, port: 80 }
+#   - { role: postgres, dbname: blarg, other_parameter: 12 }
+
+#splunkforwarder-6.2.5-272645-Linux-x86_64.tgz
+#splunk start --accept-license"
+#splunkforwarder/bin/splunk --accept-license --version

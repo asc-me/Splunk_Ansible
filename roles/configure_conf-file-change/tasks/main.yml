@@ -1,0 +1,9 @@
+---
+
+- name: edit sudoers file
+  become: yes
+  lineinfile: 
+    dest: '{{item.file}}'
+    insertafter: '{{ item.stanza }}' 
+    line: '{{ item.line }}'
+  with_items: "{{ conf_changes }}"

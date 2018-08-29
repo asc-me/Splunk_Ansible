@@ -1,0 +1,17 @@
+---
+
+- name: verify clean directory
+  become: yes
+  ignore_errors: yes
+  file: path={{ splunk_home }}/backup state=absent
+
+- name: create backup directory
+  become: yes
+  file: path={{ splunk_home }}/backup state=directory
+
+- name: backup splunk base apps 
+  become: yes
+  shell: cp -r {{ splunk_home }}/etc/apps/{{ item }} {{ splunk_home }}/backup/
+  with_items: "{{base_apps}}"
+
+

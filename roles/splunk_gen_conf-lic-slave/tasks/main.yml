@@ -1,0 +1,4 @@
+---
+
+- name: add license config
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk edit licenser-localslave -master_uri '{{ lm_uri }}' -auth "{{ splunk_cred }}"

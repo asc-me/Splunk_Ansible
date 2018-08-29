@@ -1,0 +1,21 @@
+---
+
+- name: stop splunk service
+  shell: cd {{ splunk_home }}/ && bin/splunk stop
+  ignore_errors: yes
+  tags: stop service
+
+- name: remove splunk packages
+  command: rpm -e splunk
+  ignore_errors: yes
+  tags: uninstall
+
+- name: delete splunk dir
+  shell: rm -rvf {{ splunk_home }}
+  ignore_errors: yes
+  tags: delete dir
+
+- name: verify splunk uninstall
+  command: rpm -e splunk
+  ignore_errors: yes
+  tags: verify uninstall

@@ -1,0 +1,17 @@
+---
+
+# - name: verify splunk is stopped
+#   become: yes
+#   shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk stop
+#   ignore_errors: yes
+
+# consider adding removal command here for apps in etc/apps
+
+- name: restore splunk base apps 
+  become: yes
+  shell: cp -r {{ splunk_home }}/backup/{{ item }} {{ splunk_home }}/etc/apps/
+  with_items: "{{base_apps}}"
+
+# - name: start splunk
+#   become: yes
+#   shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk stop

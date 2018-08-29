@@ -1,0 +1,34 @@
+---
+
+- hosts: sv_hf
+  serial: 1
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    force_upgrade: true
+# set installer from fetcher
+    splunk_version: 7.1.1
+    splunk_branch: nightlight
+# if fetcher fails look into the os_platform options on releases.splunk.com
+    os_platform: linux-2.6-x86_64.rpm
+    installer: '{{ splunk_pkg }}'
+#    installer: splunk-7.1.0-15d87bc2dc4e-linux-2.6-x86_64.rpm
+    url: '{{ splunk_dl }}'
+#    url: http://releases.splunk.com/dl/nightlight_builds/7.1.0-20180418-0015/splunk-7.1.0-15d87bc2dc4e-linux-2.6-x86_64.rpm
+  become: yes
+  roles:
+  #  - configure_host_vars
+#    - { role: splunk_build_fetcher-branch, when: url is not defined and splunk_branch is defined }
+    - { role: splunk_build_fetcher-version }
+    - { role: splunk_gen_update-core, when: (spl_role == 'idx_cm' or spl_role == 'cmdp' or spl_role == 'shc_dp') }
+    - { role: splunk_idx_enable_main, when: (spl_role == 'idx_cm' or spl_role == 'cmdp') }
+    - { role: splunk_gen_update-core, when: (spl_role == 'idx_slave' or spl_role == 'hf') }
+    - { role: splunk_gen_update-core, when: (spl_role == 'shc_mem' or spl_role == 'shc_cap' or spl_role == 'dev_sh' or spl_role == 'prd_sh') }
+#    - { role: splunk_idx_disable_main, when: (spl_role == 'idx_cm' or spl_role == 'cmdp') }
+
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089

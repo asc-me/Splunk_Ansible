@@ -1,0 +1,24 @@
+---
+
+- hosts: gen-stg_shc-dp
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: shcluster/apps
+    app_packages:
+      - { project: 'zero-cm', repo: 'search_apps', branch: 'stage'}
+      - { project: 'zero-id', repo: 'zero_stage', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_app_mon', branch: 'master' }
+      - { project: 'zero-id', repo: 'zero_dsa', branch: 'master'}
+      - { project: 'zero-id', repo: 'spl_replay', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master'}
+      - { project: 'zero-ed', repo: 'itsi_experience', branch: 'master'}
+      - { project: 'zero-ed', repo: 'TA-alert_connector', branch: 'master'}
+  roles:
+    - configure_git-management
+    - { role: splunk_shc_update-group-apps, when: result|changed }
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - { role: splunk_shc_app_deploy, when: result|changed }

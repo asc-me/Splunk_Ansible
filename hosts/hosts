@@ -1,0 +1,714 @@
+##########################################################################################
+###################### Production and Development Appliance Layer ########################
+##########################################################################################
+
+[appliance_all:children]
+deploy_srv
+serv_mon
+gen-stg_mon
+zero_dsa
+
+
+[deploy_srv]
+sv-prd-spl-003	deploy_dir=deployment-apps	spl_role=prd_sh
+
+[serv_mon]
+sv-prdv-splx-000  spl_role=prd_sh
+
+[zero_dsa]
+sv-prd-spl-005	uri=https://sv-prd-spl-005 spl_role=prd_sh
+
+[zero_test]
+sv-prd-spl-007  uri=https://sv-prd-spl-007  spl_role=dev_sh
+
+[zero_audit]
+sv-prd-spl-008  uri=https://sv-prd-spl-008  spl_role=prd_sh
+
+[zero_app-inspect]
+sv-prd-spl-006
+
+[zero_awx]
+sv-prd-spl-009
+
+[sh_prodds]
+sv-ito-icbt-001
+
+
+######################################################################################
+###################### Production and Development Index Layer ########################
+######################################################################################
+
+
+
+###########################################
+############# Zero Stage ##################
+###########################################
+
+[gen-stg_all:children]
+gen-stg_idx
+gen-stg_idx-cm
+gen-stg_shc
+gen-stg_shc-dp
+gen-stg_mon
+
+[gen-stg_mon]
+sv-stgv-splk-000 spl_role=prd_sh
+
+[gen-stg_idx]
+sv-stgp-splk-001
+sv-stgp-splk-002
+sv-stgp-splk-003
+sv-stgp-splk-004
+sv-stgp-splk-005
+sv-stgp-splk-006
+sv-stgp-splk-007
+sv-stgp-splk-008
+sv-stgp-splk-009
+sv-stgp-splk-010
+
+
+[gen-stg_idx:vars]
+spl_role=idx_slave
+cm_uri=https://sv-stgv-splk-001:8089
+idx_tag=GEN-STG
+
+[gen-stg_idx-cm]
+sv-stgv-splk-001  idx_tag=GEN-STG spl_role=idx_cm
+
+[gen-stg_shc]
+sv-stgv-splk-100	uri=https://sv-stgv-splk-100 spl_role=shc_cap
+sv-stgv-splk-101	uri=https://sv-stgv-splk-101 spl_role=shc_mem
+sv-stgv-splk-102	uri=https://sv-stgv-splk-102 spl_role=shc_mem
+sv-stgv-splk-103	uri=https://sv-stgv-splk-103 spl_role=shc_mem
+
+[gen-stg_shc:vars]
+deploy_uri=https://sv-stgv-splk-002
+okta=splunkinc_splunkstaging/1234567890
+eid=splunk
+shc_tag=GENSTG
+idx_tag=GEN-STG
+
+
+[gen-stg_shc-dp]
+sv-stgv-splk-002
+
+[gen-stg_shc-dp:vars]
+uri=https://sv-stgv-splk-002
+target_uri=https://sv-stgv-splk-100
+spl_role=shc_dp
+shc_tag=GENSTG
+idx_tag=GEN-STG
+
+
+
+###########################################
+############# Zero General ################
+###########################################
+
+[gen-prod_all:children]
+prod_idx
+prod_idx_cm
+prod_shc
+prod_shc_dp
+
+[prod_idx]
+sv-prdp-splk-001
+sv-prdp-splk-002
+sv-prdp-splk-003
+sv-prdp-splk-004
+sv-prdp-splk-005
+sv-prdp-splk-006
+sv-prdp-splk-007
+sv-prdp-splk-008
+sv-prdp-splk-009
+sv-prdp-splk-010
+sv-prdp-splk-011
+sv-prdp-splk-012
+sv-prdp-splk-013
+sv-prdp-splk-014
+sv-prdp-splk-015
+sv-prdp-splk-016
+sv-prdp-splk-017
+
+[prod_idx:vars]
+idx_tag=GEN-PRD
+spl_role=idx_slave
+splunk_user=root
+
+[prod_idx_cm]
+sv-prd-spl-001	deploy_dir=master-apps	spl_role=idx_cm idx_tag=GEN-PRD
+
+[prod_shc]
+sv-prd-spl-100	uri=https://sv-prd-spl-100 spl_role=shc_cap
+sv-prd-spl-101	uri=https://sv-prd-spl-101 spl_role=shc_mem
+sv-prd-spl-102	uri=https://sv-prd-spl-102 spl_role=shc_mem
+sv-prd-spl-103	uri=https://sv-prd-spl-103 spl_role=shc_mem
+sv-prd-spl-104	uri=https://sv-prd-spl-104 spl_role=shc_mem
+sv-prd-spl-105	uri=https://sv-prd-spl-105 spl_role=shc_mem
+sv-prd-spl-106	uri=https://sv-prd-spl-106 spl_role=shc_mem
+sv-prd-spl-107	uri=https://sv-prd-spl-107 spl_role=shc_mem
+sv-prd-spl-108	uri=https://sv-prd-spl-108 spl_role=shc_mem
+
+[prod_shc:vars]
+shc_tag=GENPROD
+idx_tag=GEN-PRD
+cluster_secret="{{vault_genprd_shckey}}"
+deploy_uri=https://sv-prd-spl-002
+okta=splunkinc_splunkprod/1234567890
+eid=splunk
+
+[prod_shc_dp]
+sv-prd-spl-002	uri=https://sv-prd-spl-002	target_uri=https://sv-prd-spl-100 spl_role=shc_dp tag=GENPROD
+
+[prod_shc_cap]
+sv-prd-spl-100
+
+
+###########################################
+############# Zero Products ###############
+###########################################
+
+[products_all:children]
+products_idx
+products_apl
+products_shc
+
+[products_idx]
+127.0.1.1
+127.0.1.2
+127.0.1.3
+127.0.1.4
+127.0.1.5
+
+[products_idx:vars]
+idx_tag=PRODUCTS
+spl_role=idx_slave
+cm_uri=https://127.0.1.10:8089
+ansible_ssh_private_key_file=~/.ssh/splunk.pem
+ansible_user=splunk
+user=splunk
+user_group=splunk
+
+
+[products_apl]
+10.216.8.33
+
+[products_apl:vars]
+idx_tag=PRODUCTS
+shc_tag=PRODUCTS
+spl_role=cmdp
+ansible_ssh_private_key_file=~/.ssh/splunk.pem
+ansible_user=splunk
+target_uri=https://127.0.2.1
+user=splunkzero
+user_group=splunkzero
+
+[products_shc]
+127.0.2.1	uri=https://127.0.2.1 spl_role=shc_cap
+127.0.2.2	uri=https://127.0.2.2 spl_role=shc_mem
+127.0.2.3	uri=https://127.0.2.3 spl_role=shc_mem
+
+[products_shc:vars]
+idx_tag=PRODUCTS
+shc_tag=PRODUCTS
+cap_uri=https://127.0.2.1
+cluster_label=zero-shc-products-aws
+cluster_secret="{{vault_s0prdcts_shckey}}"
+deploy_uri=https://127.0.1.10:8089
+ansible_ssh_private_key_file=~/.ssh/splunk.pem
+ansible_user=splunk
+user=splunk
+user_group=splunk
+
+###########################################
+############# Zero Internal ###############
+###########################################
+
+[internal_all:children]
+internal_idx
+internal_apl
+
+[internal_idx]
+sv-prdp-splk-901
+sv-prdp-splk-902
+sv-prdp-splk-903
+
+[internal_idx:vars]
+idx_tag=INTERNAL
+spl_role=idx_slave
+cm_uri=https://sv-prd-spl-091.sv.splunk.com:8089
+splunk_user=splunk
+
+
+[internal_apl]
+sv-prd-spl-091
+
+[internal_apl:vars]
+idx_tag=INTERNAL
+shc_tag=SHOWCASE
+spl_role=cmdp
+
+
+
+
+############################################################################################
+###################### Production and Development Search Head Layer ########################
+############################################################################################
+
+
+##########################################
+########## Showcase shcluster ############
+##########################################
+
+[showcase_all:children]
+zero_showcase_apl
+zero_showcase_shc
+
+[zero_showcase_apl]
+sv-prd-spl-091
+
+[zero_showcase_apl:vars]
+uri=https://sv-prd-spl-091
+target_uri=https://sv-prd-spl-190
+spl_role=cmdp
+shc_tag=SHOWCASE
+idx_tag=GEN-PRD
+
+[zero_showcase_shc]
+sv-prd-spl-190	uri=https://sv-prd-spl-190 spl_role=shc_cap
+sv-prd-spl-191	uri=https://sv-prd-spl-191 spl_role=shc_mem
+sv-prd-spl-192	uri=https://sv-prd-spl-192 spl_role=shc_mem
+sv-prd-spl-193	uri=https://sv-prd-spl-193 spl_role=shc_mem
+
+[zero_showcase_shc:vars]
+shc_tag=SHOWCASE
+idx_tag=GLOBAL
+cap_uri=https://sv-prd-spl-190
+okta_chic_key=splunkinc_splunkshowcase/1234567890
+cluster_label=zero-shc-showcase-sv
+cluster_secret="{{vault_s0shw_shckey}}"
+deploy_uri=https://sv-prd-spl-091:8089
+
+
+
+##########################################
+########## Marketing shcluster ###########
+##########################################
+
+[marketing_all:children]
+marketing_apl
+marketing_shc
+
+[marketing_apl]
+sv-prd-spl-031
+
+[marketing_apl:vars]
+shc_tag=MARKETING
+spl_role=shc_dp
+target_uri=https://sv-prd-spl-301
+
+[marketing_shc]
+sv-prd-spl-301	uri=https://sv-prd-spl-301 spl_role=shc_cap
+sv-prd-spl-302	uri=https://sv-prd-spl-302 spl_role=shc_mem
+sv-prd-spl-303	uri=https://sv-prd-spl-303 spl_role=shc_mem
+
+[marketing_shc:vars]
+shc_tag=MARKETING
+idx_tag=GEN-PRD
+cap_uri=https://sv-prd-spl-301
+okta=splunkinc_splunkmarketing/1234567890
+cluster_label=zero-shc-marketing-sv
+cluster_secret="{{vault_s0mrkt_shckey}}"
+deploy_uri=https://sv-prd-spl-031:8089
+
+
+##########################################
+############ ITSI sh cluster #############
+##########################################
+
+[itsi_all:children]
+itsi_shc
+itsi_apl
+
+[itsi_shc]
+sv-prd-spl-201	uri=https://sv-prd-spl-201	spl_role=shc_cap
+sv-prd-spl-202	uri=https://sv-prd-spl-202	spl_role=shc_mem
+sv-prd-spl-203	uri=https://sv-prd-spl-203	spl_role=shc_mem
+
+[itsi_shc:vars]
+shc_tag=ITSI
+idx_tag=GLOBAL
+shc_secret="{{vault_s1it_shckey}}"
+cluster_label=zero-shc-marketing-sv
+deploy_uri=https://sv-prd-spl-200:8089
+
+
+[itsi_apl]
+sv-prd-spl-200
+
+[itsi_apl:vars]
+shc_tag=ITSI
+idx_tag=GLOBAL
+uri=https://sv-prd-spl-200
+target_uri=https://sv-prd-spl-201
+spl_role=shc_dp
+
+[itsi_shc_cap]
+sv-prd-spl-201	uri=https://sv-prd-spl-201	shc_secret="{{vault_s1it_shckey}}"
+
+
+
+
+##########################################
+############ SGS Environment #############
+##########################################
+
+[sgs_all:children]
+opsh_sgs-es
+opsh_sgs-apps
+sh_sgs
+
+#########################################################
+################ stand alone search heads ###############
+#########################################################
+
+[opsh_all:children]
+sh_itsi
+sh_accenture
+sh_app-inspect1
+sh_app-inspect2
+opsh_content
+prod_secops
+opsh_sales
+opsh_it
+opsh_xops
+opsh_sgs-apps
+opsh_sgs-es
+
+
+[prod_sh_update_group:children]
+sh_itsi
+sh_accenture
+sh_app-inspect1
+sh_app-inspect2
+opsh_content
+opsh_sales
+opsh_it
+opsh_xops
+
+
+[sh_itsi]
+sv-prd-spl-901	uri=https://sv-prd-spl-901 spl_role=prd_sh idx_tag=GEN-PRD
+
+[sh_accenture]
+sv-prd-spl-902	uri=https://sv-prd-spl-902 spl_role=prd_sh idx_tag=GEN-PRD
+
+[sh_app-inspect1]
+sv-prd-spl-903	uri=https://sv-prd-spl-903 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_content]
+sv-prd-spl-904	uri=https://sv-prd-spl-904 spl_role=prd_sh idx_tag=GEN-PRD
+
+[sh_app-inspect2]
+sv-prd-spl-905	uri=https://sv-prd-spl-905 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_sales]
+sv-prd-spl-906	uri=https://sv-prd-spl-906 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_sgs-apps]
+sv-prd-spl-907	uri=https://sv-prd-spl-907 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_sgs-es]
+sv-prd-spl-908	uri=https://sv-prd-spl-908 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_xops]
+sv-prd-spl-909	uri=https://sv-prd-spl-909 spl_role=prd_sh idx_tag=GEN-PRD
+
+[opsh_it]
+sv-prd-spl-912	spl_role=prd_sh idx_tag=GEN-PRD
+
+[prod_secops]
+svs-prd-essh01	uri=https://svs-prd-essh01 spl_role=prd_sh idx_tag=GEN-PRD
+
+
+
+
+#######################################
+########## dev search boxes ###########
+#######################################
+
+[dev_dogfood]
+sv-dev-dfsh01  spl_role=dev_sh
+
+[dev_secops]
+svs-dev-essh01  spl_role=dev_sh
+
+[dev_sh_update_group]
+sv-devv-splk-901
+sv-devv-splk-902
+sv-devv-splk-903
+sv-devv-splk-904
+sv-devv-splk-905
+sv-devv-splk-906
+sv-devv-splk-907
+sv-devv-splk-908
+sv-devv-splk-910
+sv-devv-splk-912
+sv-devv-splk-913
+sv-devv-splk-914
+
+
+[sh_bizapps]
+sv-devv-splk-901	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_cloudadoption]
+sv-devv-splk-902	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_webdev]
+sv-devv-splk-903	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_webmkt]
+sv-devv-splk-904	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_telem]
+sv-devv-splk-905	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_market]
+sv-devv-splk-906	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_itops]
+sv-devv-splk-907	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_prdinstr]
+sv-devv-splk-908	spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_techmkt]
+sv-devv-splk-909	uri=https://sv-devv-splk-909  idx_tag=GEN-PRD	team=Techmkt	spl_role=prd_sh
+
+[sh_dua]
+sv-devv-splk-910  spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_sgs]
+sv-devv-splk-911  spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_ba]
+sv-devv-splk-912  uri=https://sv-devv-splk-912  spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_fpna]
+sv-devv-splk-913	uri=https://sv-devv-splk-913 spl_role=dev_sh  idx_tag=GEN-PRD
+
+[sh_conf]
+sv-devv-splk-914	uri=https://sv-devv-splk-914 spl_role=dev_sh  idx_tag=GEN-PRD
+
+
+#############################################################################################
+############################ Service Integrations ###########################################
+#############################################################################################
+
+################ API Query Layer ################
+
+[ops_cmdb]
+sv-prd-spl-600  spl_role=dev_sh  idx_tag=GEN-PRD
+
+
+
+
+#############################################################################################
+############################ Data Collection and Gen ########################################
+#############################################################################################
+
+
+###################### API Data Generation Layer ########################
+
+
+[api_1]
+sv-prd-spl-501  spl_role=dcn
+
+[api_2]
+sv-prd-spl-502  spl_role=dcn
+
+[api_3]
+sv-prd-spl-503  spl_role=dcn
+
+[api_4]
+sv-prd-spl-504  spl_role=dcn
+
+[api_5]
+sv-prd-spl-505  spl_role=dcn
+
+[api_6]
+sv-prd-spl-506  spl_role=dcn
+
+[api_7]
+sv-prd-spl-507  spl_role=dcn
+
+[api_8]
+sv-prd-spl-508  spl_role=dcn
+
+[api_9]
+sv-prd-spl-509  spl_role=dcn
+
+[api_10]
+sv-prd-spl-510  spl_role=dcn
+
+[api_11]
+sv-prd-spl-511  spl_role=dcn
+
+[api_12]
+sv-prd-spl-512  spl_role=dcn
+
+[api_13]
+sv-prd-spl-513  spl_role=dcn
+
+[api_14]
+sv-prd-spl-514  spl_role=dcn
+
+[api_15]
+sv-prd-spl-515  spl_role=dcn
+
+[api_16]
+sv-prd-spl-516  spl_role=dcn
+
+[api_58]
+sv-prd-spl-558  spl_role=dcn
+
+[dcn_update_group]
+sv-prd-spl-501
+sv-prd-spl-502
+sv-prd-spl-503
+sv-prd-spl-504
+sv-prd-spl-505
+sv-prd-spl-506
+sv-prd-spl-507
+sv-prd-spl-508
+sv-prd-spl-509
+sv-prd-spl-510
+sv-prd-spl-511
+sv-prd-spl-512
+sv-prd-spl-513
+sv-prd-spl-514
+sv-prd-spl-515
+sv-prd-spl-516
+sv-prd-spl-517
+sv-prd-spl-518
+sv-prd-spl-519
+sv-prd-spl-520
+sv-prd-spl-521
+sv-prd-spl-522
+sv-prd-spl-523
+sv-prd-spl-524
+sv-prd-spl-525
+sv-prd-spl-526
+sv-prd-spl-527
+
+
+[dcn_update_group:vars]
+spl_role=dcn
+
+[webdev_hec]
+10.209.2.210
+10.209.2.221
+
+[webdev_hec:vars]
+spl_role=dcn
+ansible_ssh_private_key_file=~/.ssh/splunk.pem
+ansible_user=splunk
+user=splunk
+user_group=splunk
+
+[dcn_new_hosts]
+sv-prd-spl-526
+sv-prd-spl-527
+
+
+[dcn_new_hosts:vars]
+spl_role=dcn
+
+[svs_syslog]
+svs-prdv-splk-591
+svs-prdv-splk-592
+svs-prdv-splk-593
+
+[svs_syslog:vars]
+splunk_user=splunk
+splunk_home=/opt/splunk
+spl_role=dcn_syslog
+
+[sv_syslog]
+sv-prd-spl-590
+sv-prd-spl-591
+sv-prd-spl-592
+sv-prd-spl-593
+sv-prd-spl-594
+sv-prd-spl-595
+sv-prd-spl-596
+sv-prd-spl-597
+sv-prd-spl-598
+sv-prd-spl-599
+
+[sv_syslog:vars]
+splunk_user=splunk
+splunk_home=/opt/splunk
+spl_role=dcn_syslog
+
+
+############################################################################
+###################### Heavy Forwarding Layer ##############################
+############################################################################
+
+[new_hf]
+sv-prd-spl-560
+sv-prd-spl-561
+sv-prd-spl-562
+sv-prd-spl-563
+sv-prd-spl-564
+
+
+[new_hf:vars]
+repo=heavy_forward
+branch=master
+deploy_dir=apps
+spl_role=hf
+
+[svs_hf]
+svs-hwf01
+svs-hwf02
+
+[svs_hf:vars]
+repo=heavy_forward
+branch=master
+deploy_dir=apps
+splunk_user=splunk
+splunk_home=/opt/splunk
+spl_role=hf
+
+[sv_hf]
+sv-hwf01
+
+[sv_hf:vars]
+repo=heavy_forward
+branch=master
+deploy_dir=apps
+splunk_user=splunk
+splunk_home=/opt/splunk
+spl_role=hf
+
+[lhr_hf]
+lhr-prdv-splk-300 spl_role=hf
+
+
+#####################################################################
+###################### Data Forwarding Layer ########################
+#####################################################################
+
+
+
+#####################################################################
+###################### Non-Splunk Appliance #########################
+#####################################################################
+
+
+#################### ZERO_PROXY #####################
+[nginx_hosts]
+127.0.20.1
+127.0.20.2

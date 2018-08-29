@@ -1,0 +1,10 @@
+---
+
+- hosts: deploy_srv
+  vars:
+    user: acain
+    issue: empty
+    store_path: Box\ Sync/Splunk\(x\)\ External\ Files/diags/
+  sudo: yes
+  roles:
+    - splunk_gen_debug-diag

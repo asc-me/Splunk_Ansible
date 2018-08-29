@@ -1,0 +1,9 @@
+---
+
+- hosts: prod_shc_dp
+  vars:
+    branch: master
+    target_cluster: https://sv-prd-splx-101:8089
+  sudo: yes
+  roles:
+    - git_checkout-deploy

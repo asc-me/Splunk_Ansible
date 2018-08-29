@@ -1,0 +1,5 @@
+host *git.splunk.com*
+ IdentityFile ~/.ssh/git
+
+ host *github.com*
+  IdentityFile ~/.ssh/git

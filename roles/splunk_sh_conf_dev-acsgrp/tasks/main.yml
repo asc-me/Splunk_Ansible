@@ -1,0 +1,59 @@
+---
+
+- name: write saml stanza to system local auth
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   state: present
+   insertafter: EOF
+   create: yes 
+   owner: splunk
+   group: splunk
+   line: "[roleMap_SAML]"
+  
+
+- name: write DEV and PWR map to SAML
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   insertafter: "[roleMap_SAML]" 
+   line: "developer = SG-IT-SplunkZero-PERM-{{ team }}-DEV;SG-IT-SplunkZero-PERM-{{ team }}-PWR"
+
+# - name: write SLO to system local auth
+#   lineinfile: 
+#    dest: /opt/splunk/etc/system/local/authentication.conf 
+#    insertafter: "[rolemap_saml]" 
+#    line: "developer = {{ pwr_group }}"
+
+- name: write USR map to SAML
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   insertafter: "[roleMap_SAML]" 
+   line: "user = SG-IT-SplunkZero-PERM-{{ team }}-USR"
+
+- name: write ldap stanza to system local auth
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   state: present
+   insertafter: EOF
+   create: yes 
+   owner: splunk
+   group: splunk
+   line: "[roleMap_SplunkCorp]"
+
+- name: write DEV and PWR map to LDAP
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   insertafter: "[roleMap_SplunkCorp]" 
+   line: "developer = SG-IT-SplunkZero-PERM-{{ team }}-DEV;SG-IT-SplunkZero-PERM-{{ team }}-PWR"
+
+# - name: write SLO to system local auth
+#   lineinfile: 
+#    dest: /opt/splunk/etc/system/local/authentication.conf 
+#    insertafter: "[rolemap_saml]" 
+#    line: "developer = {{ pwr_group }}"
+
+- name: write USR map to LDAP
+  lineinfile: 
+   dest: /opt/splunk/etc/system/local/authentication.conf 
+   insertafter: "[roleMap_SplunkCorp]" 
+   line: "user = SG-IT-SplunkZero-PERM-{{ team }}-USR"
+

@@ -1,0 +1,15 @@
+---
+
+- hosts: prod_idx-new
+  # serial: 1
+  vars:
+########## vars for auth ##########
+    user: splunk
+    user_group: wheel
+    ansible_user: splunk
+    ansible_ssh_private_key_file: ~/.ssh/splunk.key
+########## vars for seed ##########
+# password assigned from vault
+    # pass_seed: '{{ splunk_local_user_pass }}'
+  roles:
+    - splunk-CHG-dftpass

@@ -1,0 +1,90 @@
+---
+
+- hosts: api_58
+  vars:
+    user: acain
+    user_group: domain^users
+########## vars for install #########
+    splunk_version: 7.0.2
+    os_platform: linux-2.6-x86_64.rpm
+    installer: '{{ splunk_pkg }}'
+    url: '{{ splunk_dl }}'
+########## vars for os ##########
+    yum_packages:
+      - { name: 'syslog-ng'}
+########## vars for apps ##########
+#    deploy_dir: apps
+    deploy_dir: apps
+    app_packages:
+########## Apps for all search heads #########
+      - { project: 'zero-id', repo: 'zero_IDX-cluster', branch: '{{ idx_tag }}_SEARCH', target: 'search' }
+      - { project: 'zero-sb', repo: 'Splunk_TA_nix', branch: 'sz-monitor', target: 'search' }
+########## Apps for all installs #########
+      - { project: 'zero-id', repo: 'zero_prod', branch: 'master', target: 'all' }
+      - { project: 'zero-id', repo: 'zero_dsa', branch: 'df_changes', target: 'all' }
+########## Apps for SHC deployer #########
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: '{{ shc_tag }}_DP', target: 'shc-deployer' }
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'shc-deployer' }
+########## Apps for SHC members #########
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: '{{ shc_tag }}_SH', target: 'shc-member' }
+      - { project: 'zero-id', repo: '01-gold_shc', branch: 'master', target: 'shc-member' }
+      - { project: 'zero-id', repo: '01-rolemap_perm', branch: 'master', target: 'shc-member' }
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'non-ssl', target: 'shc-member' }
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master', target: 'shc-member' }
+########## Apps for dev search #########
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'dev-sh' }
+########## Apps for prod search #########
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master', target: 'prd-sh' }
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master', target: 'prd-sh' }
+########## Apps for IDX slaves #########
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'idx-slave' }
+      - { project: 'zero-id', repo: 'zero_IDX-cluster', branch: '{{ idx_tag }}_SLAVE', target: 'idx-slave' }
+########## Apps for IDX master #########
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'idx-cm' }
+      - { project: 'zero-id', repo: 'zero_IDX-cluster', branch: '{{ idx_tag }}_MASTER', target: 'idx-cm' }
+########## Apps for DCNs ###########
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'dcn' }
+########## Apps for Syslog ###########
+      - { project: 'zero-id', repo: 'zero_syslog_sv', branch: 'master', target: 'dcn-syslog' }
+      - { project: 'zero-id', repo: 'zero_syslog_svs', branch: 'master', target: 'dcn-syslog' }
+########## Apps for HFs ###########
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master', target: 'hf' }
+########## vars for auth ##########
+#    dev_group: SG-IT-SplunkZero-PERM-appinspect-DEV
+#    pwr_group: SG-IT-SplunkZero-PERM-appinspect-PWR
+#    usr_group: DG-IT-SplunkZero-PERM-appinspect-USR
+# this variable is the AD group modifier for search head perms
+#    team: sgs
+#    okta_domain: splunk.okta.com
+#    okta_chic_key: splunkinc_splunkzeroglobalsecurityes_1/exk1cu1bfzja1dtXL1d8
+#    uri: configured in host file
+  become: yes
+  roles:
+    - { role: yum_install-os-apps, when: spl_role == 'dcn_syslog' }
+    - splunk_build_fetcher-version
+    - splunk_gen_update-core
+    - splunk-CHG-dftpass
+    - configure_host_vars
+    - configure_open_ports
+    - splunk_gen_conf-lic-slave
+    - { role: splunk_gen_conf_auth-saml, when: spl_role == 'prd_sh' }
+    - configure_THP
+    - configure_file-descriptors
+    - configure_git-management
+    - splunk_gen_update-repo-apps
+    - configure_shell_user_nopass
+    - { role: configure_syslog, when: spl_role == 'dcn_syslog' }
+#    - { role: configure_shell_access, when: spl_role == 'dev_sh' }
+#    - splunk_sh_conf_dev-sh
+    - { role: splunk_shc_init, when: (spl_role is defined and (spl_role == 'shc_cap' or spl_role == 'shc_mem')) }
+    - splunk_gen_restart
+    - { role: splunk_shc_cap_election, when: spl_role == 'shc_cap' }
+    - { role: splunk_shc_add-member, when: spl_role == 'shc_mem' }
+
+
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089
+
+#- include: splunk_sh_install-itsi.yml

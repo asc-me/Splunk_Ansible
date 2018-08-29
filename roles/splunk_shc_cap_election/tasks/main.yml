@@ -1,0 +1,5 @@
+---
+
+- name: elect the shc captain
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk bootstrap shcluster-captain -servers_list "{{ uri }}:{{ mgmt_port }}" -auth "{{ splunk_cred }}"
+  when: shc_role == "captain"

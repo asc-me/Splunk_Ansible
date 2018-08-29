@@ -1,0 +1,43 @@
+---
+
+# - name: remove managed apps from splunk apps directory
+#   become: yes
+#   file:
+#     path: '{{ splunk_home }}/etc/{{ deploy_dir }}/{{ item.repo }}'
+#     state: absent
+#   with_items: "{{ app_packages }}"
+#   ignore_errors: yes
+
+- name: copy managed apps from git clone to splunk apps
+  become: yes
+#  command: cp -r {{ clone_path }}/{{ item.project }}/{{ item.repo }} {{ splunk_home }}/etc/{{ deploy_dir }}/
+  synchronize:
+    src: '{{ clone_path }}/{{ item.project }}/{{ item.repo }}'
+    dest: '{{ splunk_home }}/etc/{{ deploy_dir }}/'
+    recursive: yes
+    delete: yes
+    rsync_path: "su -c rsync"
+    rsync_opts:
+      - "--exclude=.git"
+  with_items: "{{ app_packages }}"
+  delegate_to: "{{ inventory_hostname }}"
+  when: item.project != "zero-cm"
+  ignore_errors: yes
+
+- name: reset ownership to splunk for all apps
+  become: yes
+  file:
+    path: '{{ splunk_home }}/etc/{{ deploy_dir }}/'
+    owner: splunk
+    group: splunk
+    mode: 0755
+    state: directory
+    recurse: yes
+
+# - name: remove any .git files in copied files
+#   become: yes
+#   file:
+#    path: '{{ splunk_home }}/etc/{{ deploy_dir }}/{{ item.repo }}/.git'
+#    state: absent
+#   with_items: "{{ app_packages }}"
+#   ignore_errors: yes

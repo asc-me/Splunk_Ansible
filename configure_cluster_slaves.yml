@@ -1,0 +1,6 @@
+---
+
+- hosts: prod_idx
+  sudo: yes
+  roles:
+    - configure_index_cluster_slaves

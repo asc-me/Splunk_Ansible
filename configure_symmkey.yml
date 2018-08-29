@@ -1,0 +1,6 @@
+---
+
+- hosts: prod_shc_dp
+  sudo: yes
+  roles:
+    - configure_symmkey

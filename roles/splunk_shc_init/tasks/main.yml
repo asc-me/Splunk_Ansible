@@ -1,0 +1,5 @@
+---
+
+- name: connect to shc deployer
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk init shcluster-config -auth "{{ splunk_cred }}" -mgmt_uri {{ uri }}:{{ mgmt_port }} -replication_port {{ rep_port }} -replication_factor 2 -conf_deploy_fetch_url {{ deploy_uri }}:8089 -secret {{ cluster_secret }} -shcluster_label {{ cluster_label }} 
+  tags: initialize shc

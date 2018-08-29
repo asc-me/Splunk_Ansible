@@ -1,0 +1,9 @@
+---
+
+- hosts: products_idx
+  become: yes
+  vars:
+    cert_file: aws_rootcert.pem
+  roles:
+    - splunk_gen_conf-certs
+    - splunk_gen_restart

@@ -1,0 +1,12 @@
+---
+
+- hosts: sh_prdinstr
+  vars:
+    user: acain
+    splunk_user: splunk
+  sudo: yes
+  roles:
+    - git_directory
+    - git_clone-repo
+    - configure_dev_sh
+    - splunk-reboot

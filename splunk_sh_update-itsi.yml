@@ -1,0 +1,19 @@
+---
+
+- hosts: serv_mon
+  serial: 4
+  become: yes
+  vars:
+    user: acain
+    deploy_dir: apps
+    clone_path: /opt/git/ITSI_Package
+    git_project: zero-cm
+    git_repo: ITSI_Package
+# listed apps from ITSI 2.4.1 make sure to add apps that are added in later builds
+    splunk_apps: [ 'SA-ITSI-CustomModuleViz', 'DA-ITSI-STORAGE', 'DA-ITSI-APPSERVER', 'DA-ITSI-DATABASE', 'DA-ITSI-EUEM', 'DA-ITSI-LB', 'DA-ITSI-OS', 'DA-ITSI-VIRTUALIZATION', 'DA-ITSI-WEBSERVER', 'DA-ITSI-WebServices', 'itsi', 'SA-IndexCreation', 'SA-ITOA', 'SA-ITSI-ATAD', 'SA-ITSI-Licensechecker', 'SA-ITSI-MetricAD', 'SA-UserAccess', 'Splunk_SA_CIM', 'Splunk_TA_webservices' ]
+  roles:
+    - git-prep
+    - git_directory
+    - git_clone_single-repo
+    - splunk_gen_update_grouped-apps
+    - splunk_gen_restart

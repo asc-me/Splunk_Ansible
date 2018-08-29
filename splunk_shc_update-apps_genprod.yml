@@ -1,0 +1,51 @@
+---
+
+- hosts: prod_shc_dp
+  vars:
+    user: splunk
+    user_group: wheel
+    ansible_user: splunk
+    ansible_ssh_private_key_file: ~/.ssh/splunk.key
+    deploy_dir: shcluster/apps
+    app_packages:
+# Depreciated: clustered app repo
+      - { project: 'zero-cm', repo: 'search_apps', branch: 'master'}
+# SplunkZero Management apps
+      - { project: 'zero-id', repo: '01-gold_shc', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_prod', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_xshc_dep', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_nix', branch: 'sz-monitor'}
+# Single application repos
+      - { project: 'zero-sb', repo: 'SA-ldapsearch', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'SA-Utils', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_aws', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_vmware', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_windows', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'SplunkForNagios', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'splunk_app_netapp', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'splunk_app_microsoft_exchange', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'splunk_app_aws', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_ML_Toolkit', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_esxilogs', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_ontap', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_paloalto', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_snow', branch: 'SHC'}
+      - { project: 'zero-sb', repo: 'Splunk_TA_vcenter', branch: 'SHC'}
+# dependancy and resource applications
+      - { project: 'zero-sb', repo: 'Splunk_SA_Scientific_Python_linux_x86_64', branch: 'master'}
+      - { project: 'zero-sb', repo: 'snakey_diagram_app', branch: 'master'}
+#    app_decom:
+#      - { project: 'zero-id', repo: 'zero_dsa' }
+#    app_backup:
+#      - { project: 'zero-cm', repo: 'shc-apps', branch: 'backup' }
+#    message: backup
+  roles:
+    - configure_host_vars
+    - configure_git-management
+#    - { role: splunk_gen_backup-local }
+    - { role: splunk_shc_update-group-apps, when: result is changed }
+    - { role: splunk_gen_update-repo-apps, when: result is changed }
+#    - { role: splunk_gen_decom-apps, when: result|changed }
+    - { role: splunk_shc_app_deploy, when: result is changed }

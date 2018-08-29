@@ -1,0 +1,8 @@
+---
+
+- hosts: prod_sh_update_group
+  vars:
+    user: acain
+  become: yes
+  roles:
+    - configure_shell_user_nopass

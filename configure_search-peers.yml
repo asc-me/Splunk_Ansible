@@ -1,0 +1,13 @@
+---
+
+- hosts: sh_prdinstr
+  vars:
+    splunk_user: splunk
+    splunk_cred: admin:changeme
+    remote_user: admin
+    remote_password: changeme
+    cm_uri: ['uri-to-idx-node-1', 'uri-to-idx-node-2']
+    cm_mgmt_port: 8089
+  become: yes
+  roles:
+    - configure_search-peers

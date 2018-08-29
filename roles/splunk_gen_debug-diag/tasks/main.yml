@@ -1,0 +1,10 @@
+---
+
+- name: generate diag
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk diag > /tmp/diag-{{ ansible_date_time.date }}.tgz
+
+name: Copy diag to DCN
+     synchronize: 
+      src: /tmp/diag-{{ ansible_date_time.date }}.tgz
+      dest: rsync://sv-prd-splx-524.sv.splunk.com/opt/diag/
+     

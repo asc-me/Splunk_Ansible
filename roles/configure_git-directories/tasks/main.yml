@@ -1,0 +1,40 @@
+---
+
+- name: verify git directory exists
+  file:
+    path: '{{ clone_path }}'
+    owner: splunk
+    group: splunk
+    state: directory
+    mode: 0755
+  become: yes
+
+- name: create local git directory tree
+  file:
+    path: '{{ clone_path }}/{{ item }}'
+    state: directory
+    owner: splunk
+    group: splunk
+    mode: 755
+  become: yes
+  with_items: 
+    - zero-cm
+    - zero-id
+    - zero-ed
+
+#- name: verify clean directory
+#  become: yes
+#  shell: rm -rf {{ splunk_home }}/repo
+#  ignore_errors: yes
+
+#- name: make clone directory
+#  become: yes
+#  command: mkdir {{ splunk_home }}/repo/
+
+#- name: set owner
+#  become: yes
+#  command: chown splunk:splunk {{ splunk_home }}/repo/
+
+#- name: set perms
+#  become: yes
+#  command: chmod 777 {{ splunk_home }}/repo/

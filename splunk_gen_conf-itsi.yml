@@ -1,0 +1,18 @@
+---
+
+- hosts: one_it_shc
+  serial: 4
+  become: yes
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    conf_changes:
+      - { file: '/opt/splunk/etc/splunk-launch.conf', stanza: 'EOF', line: '"JAVA_HOME=/opt/jdk1.8.0_74.jdk"'}
+    yum_packages:
+      - { name: 'java-1.8.0-openjdk'}
+  roles:
+    - configure_conf-file-change
+    - yum_install-os-apps
+    - splunk_gen_restart

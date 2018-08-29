@@ -1,0 +1,10 @@
+---
+
+- hosts: new_uf_install
+  serial: 10
+  vars:
+    installer: splunk-6.4.0-rc2.rpm
+    user: acain
+  sudo: yes
+  roles:
+    - splunk-forwarder_deploy

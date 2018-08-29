@@ -1,0 +1,6 @@
+---
+
+- hosts: api_58
+  become: yes
+  roles:
+    - configure_open_ports

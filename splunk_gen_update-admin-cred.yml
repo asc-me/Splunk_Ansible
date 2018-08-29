@@ -1,0 +1,19 @@
+---
+
+- hosts: prod_shc
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+  become: yes
+  roles:
+    - splunk-CHG-dftpass
+
+
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089
+
+#- include: splunk_sh_install-itsi.yml

@@ -1,0 +1,8 @@
+---
+
+- hosts: deploy_srv
+  vars:
+    user: acain
+  sudo: no
+  roles:
+    - git_clone-repo

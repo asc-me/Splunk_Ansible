@@ -1,0 +1,9 @@
+---
+
+- hosts: sh_cloudadoption
+  vars:
+    user: acain
+    dev_group: SG-CloudSolutions-CloudAdoption-Sales-POC-USR
+  become: yes
+  roles:
+    - configure_shell_access

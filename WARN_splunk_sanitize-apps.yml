@@ -1,0 +1,12 @@
+---
+
+- hosts: sv_syslog
+  become: yes
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+  roles:
+    - configure_host_vars
+    - splunk_gen_sanitize-apps

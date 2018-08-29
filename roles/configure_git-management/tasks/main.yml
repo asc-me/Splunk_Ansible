@@ -1,0 +1,88 @@
+---
+
+- name: copy the ssh config file
+  copy: src=config dest=/home/{{ user }}/.ssh/config owner={{ user }} group={{ user_group }} mode=600
+
+- name: copy the known_hosts file
+  copy: src=known_hosts dest=/home/{{ user }}/.ssh/known_hosts owner={{ user }} group={{ user_group }} mode=600
+
+- name: copy the git key file
+  copy: src=git dest=/home/{{ user }}/.ssh/git owner={{ user }} group={{ user_group }} mode=600
+
+- name: Install git
+  yum: name=git state=latest
+  become: yes
+
+# - debug:
+#     var: inventory_hostname
+#
+# - set_fact:
+#     host_loc: "{{ inventory_hostname | regex_replace(([\\d\\w]+)-\\w-splkx-\\d+.*\\n$', '\\1') }}"
+#     when: "'-splkx-' in inventory_hostname"
+#
+# - set_fact:
+#     app_loc: "{{ item.repo | regex_replace(zero_syslog_([\\d\\w]+).*\\n$', '\\1') }}"
+#     with_items: "{{ app_packages }}"
+#     when: item.target == dcn-syslog
+#
+# - debug:
+#     var: host_loc
+
+- name: set shc tag when undefined
+  set_fact:
+     shc_tag: NULL
+  when: shc_tag is not defined
+
+- name: set idx tag when undefined
+  set_fact:
+     idx_tag: NULL
+  when: idx_tag is not defined
+
+# - name: default to git_server when undefined in app_packages
+#   set_fact:
+#      app_packages:
+#        server: '{{ git_server }}'
+#        project: '{{ item.project }}'
+#        repo: '{{ item.repo }}'
+#        target: '{{ item.target }}'
+#   when: item.server is undefined and item.target is defined
+#   with_items: "{{ app_packages }}"
+#
+# - name: default to git_server when undefined in app_packages (alt)
+#   set_fact:
+#      app_packages:
+#        server: '{{ git_server }}'
+#        project: '{{ item.project }}'
+#        repo: '{{ item.repo }}'
+#   when: item.server is undefined and item.target is undefined
+#   with_items: "{{ app_packages }}"
+
+
+- name: clone into repos for server type
+  become: yes
+  git:
+    repo: '{{ git_server }}/{{ item.project }}/{{ item.repo }}.git'
+    version: '{{ item.branch }}'
+    dest: '{{ clone_path }}/{{ item.project }}/{{ item.repo }}'
+    key_file: /home/{{ user }}/.ssh/git
+    accept_hostkey: true
+    force: yes
+  with_items: "{{ app_packages }}"
+  register: result
+# adding conditionals for different server types, used for build scripts
+# the below line does not work as jinja statements dont support embedded variables
+#        (spl_role == "dcn_syslog" and item.target == "dcn-syslog" and item.repo == zero_syslog_{{ host_loc }}) or
+# substituted line instead need to handle host location with a different scripts
+  when: (item.target is not defined) or
+        (spl_role == "dev_sh" and (item.target == "dev-sh" or item.target == "all" or item.target == "search")) or
+        (spl_role == "prd_sh" and (item.target == "prd-sh" or item.target == "all" or item.target == "search")) or
+        (spl_role == "dcn" and (item.target == "dcn" or item.target == "all")) or
+        (spl_role == "dcn_syslog" and item.target == "dcn-syslog") or
+        (spl_role == "dcn_syslog" and (item.target == "hf" or item.target == "all")) or
+        (spl_role == "hf" and (item.target == "hf" or item.target == "all")) or
+        (spl_role == "idx_slave" and (item.target == "idx-slave" or item.target == "all")) or
+        (spl_role == "idx_cm" and (item.target == "idx-cm" or item.target == "all" or item.target is not defined)) or
+        (spl_role == "cmdp" and (item.target == "shc-deployer" or item.target == "idx_cm" or item.target == "all" or item.target is not defined)) or
+        (spl_role == "shc_dp" and (item.target == "shc-deployer" or item.target == "all" or item.target is not defined)) or
+        (spl_role == "shc_cap" and (item.target == "shc-member" or item.target == "all" or item.target == "search")) or
+        (spl_role == "shc_mem" and (item.target == "shc-member" or item.target == "all" or item.target == "search"))

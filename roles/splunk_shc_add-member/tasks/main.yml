@@ -1,0 +1,5 @@
+---
+
+- name: add mmember to cluster
+  command: sudo -u {{ splunk_user }} /opt/splunk/bin/splunk add shcluster-member -current_member_uri {{ cap_uri }}:{{ mgmt_port }} -auth "{{ splunk_cred }}"
+  when: spl_role == "shc_mem"

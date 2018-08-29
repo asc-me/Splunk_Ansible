@@ -1,0 +1,128 @@
+---
+
+- name: check if splunk is installed
+  stat:
+    path: "{{ splunk_home }}/bin/splunk"
+  register: splunk_installed
+
+- name: set facts to zero if no install found
+  set_fact:
+    install_ver: "000"
+    install_build: "000"
+  when: splunk_installed.stat.exists == False
+
+- name: check current version
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk version
+  become: yes
+  register: installed_ver
+  when: splunk_installed.stat.exists == True
+
+- name: set installed build and version facts
+  set_fact:
+    install_ver: "{{ installed_ver.stdout | regex_replace('^Splunk\\s(\\d+\\.\\d+\\.\\d+)\\s\\(build.+$', '\\1') }}"
+    install_build: "{{ installed_ver.stdout | regex_replace('^Splunk\\s\\d+\\.\\d+\\.\\d+\\s\\(build\\s(.+)\\)$', '\\1') }}"
+  when: splunk_installed.stat.exists == True
+
+- name: always set fetched splunk facts
+  set_fact:
+    fetch_ver: "{{ installer | regex_replace('^splunk-(\\d+\\.\\d+\\.\\d+)-.+$', '\\1') }}"
+    fetch_build: "{{ installer | regex_replace('^splunk-\\d+\\.\\d+\\.\\d+-(.+)-linux.+$', '\\1') }}"
+
+#- name: compare installed version with fetched version
+
+# - name: copy splunk installer to target
+#   copy: src={{ installer }} dest=/home/{{ user }}/
+#   tags: copy installer
+
+- name: Install wget
+  become: yes
+  yum:
+   name: wget
+   state: latest
+  when:
+    (install_ver == fetch_ver and install_build != fetch_build) or
+    (install_ver != fetch_ver) or
+    (force_upgrade == true)
+
+- name: copy splunk installer to target
+  command: wget -O {{ installer }} {{ url }}
+  when:
+    (install_ver == fetch_ver and install_build != fetch_build) or
+    (install_ver != fetch_ver) or
+    (force_upgrade == true)
+
+- name: install splunk
+  become: yes
+  command: rpm -Uvh /home/{{ user }}/{{ installer }} --force
+  when:
+    (install_ver == fetch_ver and install_build != fetch_build) or
+    (install_ver != fetch_ver) or
+    (force_upgrade == true)
+
+- name: start splunk
+  command: sudo -u {{ splunk_user}} {{ splunk_home }}/bin/splunk start --accept-license --answer-yes
+  ignore_errors: yes
+  become: yes
+  when:
+    (install_ver == fetch_ver and install_build != fetch_build) or
+    (install_ver != fetch_ver) or
+    (force_upgrade == true)
+
+#- name: enable splunk @ boot
+#  become: yes
+#  shell: cd {{ splunk_home }}/ && bin/splunk enable boot-start -user {{ splunk_user }}
+#  tags: splunk boot
+
+# - name: change admin password
+#   command: /opt/splunk/bin/splunk edit user admin -password password -role admin -auth admin:changeme
+#   tags: splunk login
+
+- name: clean up home dir
+  file:
+    path: /home/{{ user }}/{{ installer }}
+    state: absent
+  when:
+    (install_ver != fetch_ver) or
+    (install_ver == fetch_ver and install_build != fetch_build)
+
+# - name: Splunk opt install check
+#   command: /opt/splunk/bin/splunk version
+#   register: splunk_installed
+#   ignore_errors: yes
+#   tags: splunk
+
+# - name: debug task
+#   debug: var=splunk_installed.failed
+
+# - name: send splunk_installer
+#   copy: src=/Users/acain/Desktop/splunk-6.2.5.rpm dst=/Home/acain/splunk-6.2.5.rpm
+#   register: copy_installer
+#   when: splunk_installed.failed = true
+
+# - name: Install Splunk
+#   command: rpm -Uvh splunk-6.2.5.rpm
+#   when: splunk_download.stat.exists == true
+#   register: splunk_install_status
+#   changed_when: false
+#   tags: splunk
+
+# - name: Splunk start service
+#   shell: /opt/splunkforwarder/bin/splunk start --accept-license
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# - name: Splunk enable start on boot
+#   shell: /opt/splunkforwarder/bin/splunk enable boot-start
+#   notify: restart_splunk
+#   when: splunk_install_status.changed == true
+#   tags: splunk
+
+# dependencies:
+#   - { role: common, some_parameter: 3 }
+#   - { role: apache, port: 80 }
+#   - { role: postgres, dbname: blarg, other_parameter: 12 }
+
+#splunkforwarder-6.2.5-272645-Linux-x86_64.tgz
+#splunk start --accept-license"
+#splunkforwarder/bin/splunk --accept-license --version

@@ -1,0 +1,105 @@
+---
+
+- name: stop splunk service
+  command: /opt/splunk/bin/splunk stop
+  ignore_errors: yes
+  tags: service stop
+
+- name: delete slave-apps dir
+  command: rm -rvf /opt/splunk/etc/slave-apps/*
+  ignore_errors: yes
+  tags: service delete
+
+- name: start splunk service
+  command: /opt/splunk/bin/splunk start
+  ignore_errors: yes
+  tags: service start
+
+# - name: copy splunk local
+#   command: mv /home/acain/local /opt/splunk/etc/system/ 
+#   tags: copy
+
+# - name: remove user-prefs dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/user-prefs
+#   ignore_errors: yes
+#   tags: user-prefs
+
+# - name: remove man console dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/splunk_management_console
+#   ignore_errors: yes
+#   tags: splunk_management_console
+
+# - name: remove data preview dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/splunk_datapreview
+#   ignore_errors: yes
+#   tags: splunk_datapreview
+
+# - name: remove search dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/search
+#   ignore_errors: yes
+#   tags: search
+
+# - name: remove sample app dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/sample_app
+#   ignore_errors: yes
+#   tags: sample_app
+
+# - name: remove legacy dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/legacy
+#   ignore_errors: yes
+#   tags: legacy
+
+# - name: remove learned dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/learned
+#   ignore_errors: yes
+#   tags: learned
+
+# - name: remove launcher dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/launcher
+#   ignore_errors: yes
+#   tags: launcher
+
+# - name: remove introspec dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/introspection_generator_addon
+#   ignore_errors: yes
+#   tags: introspection_generator_addon
+
+# - name: remove gettingstarted dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/gettingstarted
+#   ignore_errors: yes
+#   tags: gettingstarted
+
+# - name: remove framework dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/framework
+#   ignore_errors: yes
+#   tags: framework
+
+# - name: remove light forwarder dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/SplunkLightForwarder
+#   ignore_errors: yes
+#   tags: SplunkLightForwarder
+
+# - name: remove forwarder dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/SplunkForwarder
+#   ignore_errors: yes
+#   tags: SplunkForwarder
+
+# - name: remove global_index dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/global_index
+#   ignore_errors: yes
+#   tags: global_index
+
+# - name: remove deploy client dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/deploymentclient
+#   ignore_errors: yes
+#   tags: deploymentclient
+
+# - name: remove sideview dir
+#   command: rm -rvf /opt/splunk/etc/slave-apps/sideview_utils
+#   ignore_errors: yes
+#   tags: sideview_utils
+
+# - name: restart splunk service
+#   command: /opt/splunk/bin/splunk restart
+#   ignore_errors: yes
+#   tags: service restart

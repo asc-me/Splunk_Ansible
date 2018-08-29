@@ -1,0 +1,7 @@
+---
+
+- name: install
+  pip:
+    name: '{{ item.name }}'
+  with_items: "{{ pip_packages }}"
+  become: yes

@@ -1,0 +1,8 @@
+---
+
+- hosts: products_shc
+  become: yes
+  vars:
+    cert_file: OktaCert.pem
+  roles:
+    - splunk_gen_conf-certs

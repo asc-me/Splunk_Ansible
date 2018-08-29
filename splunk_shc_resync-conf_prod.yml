@@ -1,0 +1,12 @@
+---
+
+- hosts: prod_shc_resync
+  become: yes
+  vars:
+    user: splunk_localuser
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    splunk_user: splunk
+    auth_cred: "{{ splunk_cred }}"
+  roles:
+    - splunk_shc_resync_node

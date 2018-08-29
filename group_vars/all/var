@@ -1,0 +1,29 @@
+---
+
+# credentials
+srv_ad-pass: "{{ vault_srv_ad-pass }}"
+# splunk credentials
+auth_cred: "{{ vault_auth_cred_new }}"
+splunk_cred: "{{ vault_auth_cred_new }}"
+splunk_local_user_name: "{{ vault_splk_adm }}"
+splunk_local_user_pass: "{{ vault_splk_adm_new_pw }}"
+# splunk_dft_cred: "{{ vault_splk_dft_cred }}"
+splunk_dft_cred: "{{ vault_splk_dft_cred }}"
+new_user: "{{ vault_sys_ans_usr }}"
+new_pass: "{{ vault_sys_ans_usr_pw }}"
+
+# general environment vars
+git_server: ssh://git@git.my-company.com:7999
+os_platform: linux-3.10-x86_64.rpm
+splunk_home: /opt/splunk
+splunk_user: splunk
+clone_path: /opt/git
+lm_uri: https://127.0.0.1:8089
+idx_cm_uri: https://127.0.0.1.sv.splunk.com:8089
+eid: splunk
+okta_domain: my-company.okta.com
+rep_port: 9887
+mgmt_port: 8089
+# Deprecated: [base_apps], will remove once all scripts have been checked
+# base_apps: [ 'alert_webhook', 'alert_logevent', 'appsbrowser', 'framework', 'gettingstarted', 'introspection_generator_addon', 'launcher', 'learned', 'legacy', 'sample_app', 'search', 'splunk_archiver', 'splunk_httpinput', 'splunk_monitoring_console', 'splunk_management_console', 'splunk_instrumentation', 'SplunkForwarder', 'SplunkLightForwarder', 'user-prefs' ]
+splunk_ports: ['8000', '8065', '8088', '8089', '8191', '9887', '9997', '9998']

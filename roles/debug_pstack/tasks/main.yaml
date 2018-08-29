@@ -1,0 +1,20 @@
+---
+
+- name: get splunk pid
+  shell: cd {{ splunk_home }}/ && bin/splunk status
+  register: splunk_status
+
+- debug:
+    var: splunk_status
+
+# - name: generate pstacks
+#   shell: pstack {{ pid }} > /home/{{ user }}/{{ item }}.log
+#   with_sequence: start=1 end=60 format=pstack%02
+#   delay: 1
+
+# - name: tar pstacks
+#   shell: mv diag* /home/{{ user }}/diag-{{ sid }}-{{ issue }}.tar.gz && chmod 777 /home/{{ user }}/diag-*
+
+# ### built for mac paths
+# - name: fetch remote diag
+#   fetch: src=/home/{{ user }}/diag-{{ sid }}-{{ issue }}.tar.gz dest=/Users/{{ user }}/{{ store_path }}/

@@ -1,0 +1,5 @@
+---
+
+- name: deploy app updates to UF layer
+  become: yes
+  shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk reload deploy-server -auth "{{ splunk_cred }}"

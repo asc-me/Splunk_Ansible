@@ -1,0 +1,12 @@
+---
+
+- hosts: deploy_srv
+  vars:
+    user: acain
+    splunk_user: splunk
+    auth_cred: "{{ splunk_cred }}"
+  roles:
+    - git_directory
+    - git_clone-repo
+    - splunk_uf_app_update
+    - splunk_uf_app_deploy

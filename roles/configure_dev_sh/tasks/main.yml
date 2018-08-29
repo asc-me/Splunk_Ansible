@@ -1,0 +1,4 @@
+---
+
+- name: install search apps
+  shell: cp -r {{ splunk_home }}/repo/{{ repo }}/apps/* {{ splunk_home }}/etc/apps/ && chown -R splunk:splunk {{ splunk_home }}/etc/apps/

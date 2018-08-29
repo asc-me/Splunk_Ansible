@@ -1,0 +1,23 @@
+---
+
+- name: login to awx on localhost
+  uri:
+    url: http://{{ ansible_hostname }}/api/v2/authtoken/
+    method: POST
+    user: {{ awx_user }}
+    password: {{ awx_pass }}
+    return_content: yes
+    status_code: 200
+  register: token
+
+- debug:
+    var: token
+
+- name: post authentication template
+  uri:
+    url:
+    method: POST
+    body: awx-auth.json
+    body_format: json
+    return_content: yes
+  register: auth_post

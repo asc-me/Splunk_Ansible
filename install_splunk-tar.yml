@@ -1,0 +1,10 @@
+---
+
+- hosts: prod_shc
+  vars:
+    user: acain
+    installer: splunk-6.4.0-rc4.tgz
+    build_type: splunkbeta
+  sudo: yes
+  roles:
+    - splunk-install-tar

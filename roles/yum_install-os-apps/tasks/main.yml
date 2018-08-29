@@ -1,0 +1,7 @@
+---
+
+- name: install
+  yum: 
+    name: '{{ item.name }}'
+  with_items: "{{ yum_packages }}"
+  become: yes

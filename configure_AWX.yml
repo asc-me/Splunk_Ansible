@@ -1,0 +1,17 @@
+---
+
+- hosts: sh_fpna
+  serial: 4
+  become: yes
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    yum_packages:
+      - { name: 'docker' }
+      - { name: 'docker-compose' }
+      - { name: 'ansible' }
+  roles:
+    - yum_install-os-apps
+    - splunk_gen_restart

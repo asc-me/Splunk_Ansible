@@ -1,0 +1,24 @@
+---
+
+- hosts: products_all
+  vars:
+#    user: splunk_localuser
+#    ansible_user: splunk_localuser
+#    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    splunk_user: splunk
+    force_upgrade: true
+#    set installer from fetcher
+    splunk_version: 7.1.0
+    splunk_branch: nightlight
+# if fetcher fails look into the os_platform options on releases.splunk.com
+    os_platform: linux-2.6-x86_64.rpm
+    # installer: '{{ splunk_pkg }}'
+    # url: '{{ splunk_dl }}'
+  become: yes
+  roles:
+    - splunk_build_fetcher-branch
+    - { role: splunk_gen_update-core, when: (spl_role == 'idx_cm' or spl_role == 'cmdp' or spl_role == 'shc_dp') }
+    - { role: splunk_idx_enable_main, when: (spl_role == 'idx_cm' or spl_role == 'cmdp') }
+    - { role: splunk_gen_update-core, when: spl_role == 'idx_slave' }
+    - { role: splunk_gen_update-core, when: (spl_role == 'shc_mem' or spl_role == 'shc_cap' or spl_role == 'dev_sh' or spl_role == 'prd_sh') }
+#    - { role: splunk_idx_disable_main, when: (spl_role == 'idx_cm' or spl_role == 'cmdp') }

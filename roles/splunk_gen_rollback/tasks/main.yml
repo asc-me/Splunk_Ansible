@@ -1,0 +1,166 @@
+---
+
+- name: delete bin dir
+  become: yes
+  ignore_errors: yes
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - {{ splunk_home }}/bin
+    - {{ splunk_home }}/include
+    - {{ splunk_home }}/lib
+    - {{ splunk_home }}/share
+    - {{ splunk_home }}/openssl
+    - {{ splunk_home }}/etc/anonymizer
+    - {{ splunk_home }}/etc/init.d
+    - {{ splunk_home }}/etc/modules
+    - {{ splunk_home }}/etc/openldap
+    - {{ splunk_home }}/etc/system/bin
+    - {{ splunk_home }}/etc/system/default
+    - {{ splunk_home }}/etc/system/lookups
+    - {{ splunk_home }}/etc/system/metadata
+    - {{ splunk_home }}/etc/system/README
+    - {{ splunk_home }}/etc/system/static
+    - {{ splunk_home }}/etc/{{ item }}
+    - {{ splunk_home }}/ftr
+
+
+'anonymizer', 'init.d', 'modules', 'openldap', 'system/bin', 'system/default', 'system/lookups', 'system/metadata', 'system/README', 'system/static'
+
+# - name: delete include dir
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/include state=absent
+#
+# - name: delete lib dir
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/lib state=absent
+#
+# - name: delete share dir
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/share state=absent
+#
+# - name: delete openssl dir
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/openssl state=absent
+#
+# - name: delete unneeded etc dirs
+#   become: yes
+#   file: path={{ splunk_home }}/etc/{{ item }} state=absent
+#   with_items: "{{clean_etc}}"
+#   ignore_errors: yes
+#
+# # - name: delete etc dir
+# #   become: yes
+# #   ignore_errors: yes
+# #   file: path={{ splunk_home }}/etc state=absent recurse=yes
+#
+# - name: delete text files
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/copyright.txt state=absent
+#
+# - name: delete text files
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/license-eula.txt state=absent
+#
+# - name: delete text files
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/README-splunk.txt state=absent
+#
+# - name: delete text files
+#   become: yes
+#   ignore_errors: yes
+#   file: path={{ splunk_home }}/ftr state=absent
+
+# - name: copy splunk installer to host
+#   become: yes
+#   get_url: url={{ url }} dest=/home/{{ user }}/{{ installer }}
+#
+# - name: extract splunk installer
+#   become: yes
+#   unarchive: copy=no src=/home/{{ user }}/{{ installer }} dest=/home/{{ user }}/ owner=splunk group=splunk
+#
+# - name: delete auth dir from installer
+#   become: yes
+#   ignore_errors: yes
+#   file: path=/home/{{ user }}/splunk/etc/auth state=absent
+#
+# - name: delete shcluster dir from installer
+#   become: yes
+#   ignore_errors: yes
+#   file: path=/home/{{ user }}/splunk/etc/shcluster state=absent
+#
+# - name: delete master-apps dir from installer
+#   become: yes
+#   ignore_errors: yes
+#   file: path=/home/{{ user }}/splunk/etc/master-apps state=absent
+#
+# - name: delete deployment-apps dir from installer
+#   become: yes
+#   ignore_errors: yes
+#   file: path=/home/{{ user }}/splunk/etc/deployment-apps state=absent
+#
+# - name: delete disabled-apps dir from installer
+#   become: yes
+#   ignore_errors: yes
+#   file: path=/home/{{ user }}/splunk/etc/disabled-apps state=absent
+
+# - name: place splunk in home path
+#   become: yes
+#   shell: yes | cp -r /home/{{ user }}/splunk/* {{ splunk_home }}/
+
+# - name: restore backups (1 of 8) - apps
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/apps/* {{ splunk_home }}/etc/apps/
+
+# - name: restore backups (2 of 8) - users
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/users/* {{ splunk_home }}/etc/
+
+# - name: restore backups (3 of 8) - cm apps
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/master-apps {{ splunk_home }}/etc/
+
+# - name: restore backups (4 of 8) - dp apps
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/shcluster {{ splunk_home }}/etc/
+
+# - name: restore backups (5 of 8) - ds apps
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/deployment-apps {{ splunk_home }}/etc/
+
+# - name: restore backups (6 of 8) - sys local
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/system/local {{ splunk_home }}/etc/system/
+
+# - name: restore backups (7 of 8) - instance.cfg
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/instance.cfg {{ splunk_home }}/etc
+
+# - name: restore backups (8 of 8) - auth
+#   become: yes
+#   shell: cp -r /home/{{ user }}/backup/auth /opt/{{ splunk_home }}/etc/
+
+# - name: directory ownership
+#   become: yes
+#   shell: chown -R splunk:splunk {{ splunk_home }}
+#
+# - name: start splunk
+#   become: yes
+#   ignore_errors: yes
+#   shell: sudo -H -u {{ splunk_user }} {{ splunk_home }}/bin/splunk start --accept-license --answer-yes
+#
+# - name: enable splunk @ boot
+#   become: yes
+#   shell: sudo -H -u root {{ splunk_home }}/bin/splunk enable boot-start -user {{ splunk_user }}
+#
+# - name: clean up home dir
+#   become: yes
+#   shell: rm -rf /home/{{ user }}/{{ installer }}

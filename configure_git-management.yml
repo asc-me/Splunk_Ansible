@@ -1,0 +1,23 @@
+---
+
+- hosts: stage_shc_dp
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: shcluster/apps
+#    git_project: zero-cm
+#    git_repo: search_apps
+#    branch: master
+#    splunk_apps: [ 'splunkzero_admin', 'zero_rolemap', 'zero_dsa', 'zero_app_mon' ]
+    app_packages:
+      - { project: 'zero-cm', repo: 'search_apps', branch: 'master'}
+      - { project: 'zero-id', repo: 'splunkzero_admin', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_app_mon', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_dsa', branch: 'master'}
+  roles:
+    - configure_git-directories
+    - configure_git-management
+ 

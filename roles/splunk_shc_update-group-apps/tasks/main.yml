@@ -1,0 +1,23 @@
+---
+
+- name: remove shcluster deploy apps
+  become: yes
+  file: 
+    path: '{{ splunk_home }}/etc/shcluster/apps/*'
+    state: absent
+  ignore_errors: yes
+
+- file:
+    path: '{{ splunk_home }}/etc/shcluster/apps'
+    state: directory
+    owner: splunk
+    group: splunk
+    mode: 0755
+  become: yes
+
+- name: Copy repo apps to deploy directory
+  become: yes
+  shell: cp -r {{ clone_path }}/{{ item.project }}/{{ item.repo }}/apps/* {{ splunk_home }}/etc/shcluster/apps/
+  with_items: "{{ app_packages }}"
+  when: item.project == "zero-cm"
+  

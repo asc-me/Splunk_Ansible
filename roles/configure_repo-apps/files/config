@@ -1,0 +1,2 @@
+host *git.splunk.com*
+ IdentityFile ~/.ssh/git

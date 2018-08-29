@@ -1,0 +1,12 @@
+---
+
+- hosts: sh_webmkt
+  vars:
+    splunk_user: splunk
+    auth_cred: "{{ splunk_cred }}"
+    master_uri: https://sv-prd-splx-001.sv.splunk.com
+    mgmt_port: 8089
+  sudo: yes
+  roles:
+    - configure_search-peer-cluster
+    - splunk_gen_restart

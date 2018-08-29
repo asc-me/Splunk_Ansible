@@ -1,0 +1,22 @@
+---
+
+- hosts: sh_sko
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+#    team: prodds
+#    dev_group: SG-IT-SplunkZero-PERM-prodds-DEV
+#    pwr_group: SG-IT-SplunkZero-PERM-prodds-PWR
+#    usr_group: SG-IT-SplunkZero-PERM-aprodds-USR
+    okta_chic_key: splunkinc_splunkzeroskodev_1/exk1dqdr1tfYjXVN01d8
+  become: yes
+  roles:
+#    - configure_shell_access
+#    - splunk_sh_conf_dev-sh
+#    - configure_git-management
+#    - { role: splunk_gen_update-repo-apps, when: result|changed }
+#    - { role: splunk_gen_decom-apps, when:  }
+    - splunk_gen_conf_auth-saml
+    - splunk_gen_restart

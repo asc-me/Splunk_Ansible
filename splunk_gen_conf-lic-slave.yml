@@ -1,0 +1,8 @@
+---
+
+- hosts: stage_idx_cm
+  sudo: yes
+  vars:
+    splunk_user: splunk
+  roles:
+    - configure_license_slaves

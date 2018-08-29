@@ -1,0 +1,11 @@
+---
+
+- hosts: sh_techmkt
+  vars:
+    user: local_user
+    new_user: splunk_localuser
+    new_pass: new_password
+    user_group: wheel
+  become: yes
+  roles:
+    - configure_shell_user_nopass

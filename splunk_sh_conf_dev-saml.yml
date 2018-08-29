@@ -1,0 +1,28 @@
+---
+
+- hosts: sh_techmkt
+  vars:
+    user: acain
+    user_group: wheel
+#    ansible_user: splunk_localuser
+#    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: apps
+#    team: prodds ### configured in host file
+#    dev_group: SG-IT-SplunkZero-PERM-prodds-DEV
+#    pwr_group: SG-IT-SplunkZero-PERM-prodds-PWR
+#    usr_group: SG-IT-SplunkZero-PERM-prodds-USR
+    sso_url: https://splunk.okta.com/app/splunkinc_splunkzerotechnicalmarketing_1/exk1c9vd1j2U932ue1d8/sso/saml
+    slo_url: https://splunk.okta.com/app/splunkinc_splunkzerotechnicalmarketing_1/exk1c9vd1j2U932ue1d8/slo/saml
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master'}
+    app_decom:
+      - { project: 'zero-id', repo: 'zero_auth_ldap'}
+  become: yes
+  roles:
+    - configure_shell_access
+    - splunk_sh_conf_dev-acsgrp
+    - configure_git-management
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - splunk_gen_decom-apps
+    - splunk_gen_conf_auth-saml
+    - splunk_gen_restart

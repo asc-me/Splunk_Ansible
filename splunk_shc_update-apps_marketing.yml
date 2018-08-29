@@ -1,0 +1,45 @@
+---
+
+- hosts: marketing_apl
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    deploy_dir: shcluster/apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_idx-cluster', branch: 'GEN-PRD_SEARCH'}
+      - { project: 'zero-id', repo: 'zero_SHC-cluster', branch: 'MARKETING_SH'}
+      - { project: 'zero-id', repo: 'zero_prod', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_dsa', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_rolemap', branch: 'master'}
+      - { project: 'zero-id', repo: '01-gold_shc', branch: 'master'}
+      - { project: 'zero-id', repo: '01-rolemap_perm', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_saml', branch: 'master'}
+      - { project: 'zero-id', repo: 'splunk_app_db_connect', branch: 'master'}
+      - { project: 'zero-id', repo: 'Arcade', branch: 'master'}
+      - { project: 'zero-id', repo: 'ArcadeManager', branch: 'master'}
+      - { project: 'zero-id', repo: 'ArcadeMasterView', branch: 'master'}
+      - { project: 'zero-id', repo: 'parallel_coordinates_app', branch: 'master'}
+      - { project: 'zero-id', repo: 'score_card', branch: 'master'}
+      - { project: 'zero-id', repo: 'sa_mops', branch: 'master'}
+# externally developed applications
+      - { project: 'zero-ed', repo: 'conf_SA', branch: 'master'}
+      - { project: 'zero-ed', repo: 'SA_Rainfocus', branch: 'master'}
+      - { project: 'zero-ed', repo: 'conf_registrations', branch: 'master'}
+# splunk base applications
+      - { project: 'zero-sb', repo: 'splunk-bullet_graph_app', branch: 'master'}
+
+#    app_decom:
+#      - { project: 'zero-id', repo: 'zero_dsa' }
+#    app_backup:
+#      - { project: 'zero-cm', repo: 'shc-apps', branch: 'backup' }
+#    message: backup
+  roles:
+    - configure_host_vars
+    - configure_git-management
+#    - { role: splunk_gen_backup-local }
+    - { role: splunk_shc_update-group-apps, when: result is changed }
+    - { role: splunk_gen_update-repo-apps, when: result is changed }
+#    - { role: splunk_gen_decom-apps, when: result is changed }
+    - { role: splunk_shc_app_deploy, when: result is changed }

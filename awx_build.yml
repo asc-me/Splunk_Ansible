@@ -1,0 +1,32 @@
+---
+
+- hosts: zero_ansible-tower
+  become: yes
+  vars:
+# execution variables: DO NOT EDIT
+    user: splunk
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+# package variables for AWX on docker compose install
+    awx_user: admin
+    awx_pass: changeme
+    yum_packages:
+      - { name: 'docker'}
+      - { name: 'docker-compose'}
+      - { name: 'ansible'}
+      - { name: 'python-pip'}
+    pip_packages:
+      - { name: 'docker-py'}
+    app_packages:
+      - { server: 'ssh://git@github.com', project: 'ansible', repo: 'awx', branch: '1.0.5' }
+  roles:
+    - yum_install-os-apps
+    - pip_install
+    - git_clone
+    - awx_prep
+    - awx_install
+    # - awx_api-token
+    # - awx_conf-auth
+    # - awx_conf-logging
+    # - awx_conf-link

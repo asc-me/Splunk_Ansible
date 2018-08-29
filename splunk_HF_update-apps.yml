@@ -1,0 +1,73 @@
+---
+
+- hosts: sv_hf
+  serial: 1
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+    #splunk_user: splunk
+    deploy_dir: apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_hf', branch: 'master' }
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master' }
+      # apps developed by other teams in splunk
+      - { project: 'zero-ed', repo: 'TA-Skynet', branch: 'master' }
+      - { project: 'zero-ed', repo: 'eus_printer', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_cloudmeter', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_irc', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_netflow', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_splunkapps', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_webhead', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_bitbucket', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_f5', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_licensor', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_shoretel', branch: 'master' }
+      - { project: 'zero-ed', repo: 'ta_vidyo', branch: 'master' }
+      # splunkbase applications
+      - { project: 'zero-sb', repo: 'okta_ta', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_paloalto', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-domaincontroller-nt6', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-stripe', branch: 'master' }
+      - { project: 'zero-sb', repo: 'sa-forindexers', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_snow', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-exchange-2010-cas', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-tacacsdotnet', branch: 'master' }
+      - { project: 'zero-sb', repo: 'sa-hydra', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_symantec-ep', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-exchange-2010-hubtransport', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-windows', branch: 'master' }
+      - { project: 'zero-sb', repo: 'sa-ldapsearch', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_vcenter', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-exchange-2010-mailboxstore', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-windows-2008r2-exchange-iis', branch: 'master' }
+      - { project: 'zero-sb', repo: 'sa-utils', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_vmware', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-exchange-2013-clientaccess', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-windows-2012-exchange-iis', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_for_activedirectory', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_windows', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-exchange-2013-mailbox', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-windows-idx', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_esxilogs', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-cisco-ios-se', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-juniper', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta_cisco_asa', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_nix', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-dnsserver-nt6', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-nmap', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta_cloudhub', branch: 'master' }
+      - { project: 'zero-sb', repo: 'splunk_ta_ontap', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-domaincontroller-2012r2', branch: 'master' }
+      - { project: 'zero-sb', repo: 'ta-smtp-reputation', branch: 'master' }
+  roles:
+    - configure_host_vars
+    - splunk_gen_backup-prep
+    - splunk_gen_backup-apps
+    - splunk_gen_backup-deploy-apps
+    - splunk_gen_backup-instance
+    - configure_git-management
+    - splunk_gen_sanitize-apps
+    - splunk_gen_update-repo-apps
+    - splunk_gen_restart

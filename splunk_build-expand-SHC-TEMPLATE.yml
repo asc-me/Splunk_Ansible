@@ -1,0 +1,40 @@
+---
+
+- hosts: 
+  vars:
+    user:
+    user_group: domain^users
+### splunk installer
+    installer: splunk-6.6.2-4b804538c686-linux-2.6-x86_64.rpm
+    url: 'https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=6.6.2&product=splunk&filename=splunk-6.6.2-4b804538c686-linux-2.6-x86_64.rpm&wget=true'
+### vars for apps
+# will receive apps from last deployer bundle
+### vars for auth
+    okta_chic_key: splunkinc_splunkzeroglobalsecurityes_1/exk1cu1bfzja1dtXL1d8
+#    uri: configured in host file
+  become: yes
+  roles:
+    - splunk-update
+    - splunk-CHG-dftpass
+    - configure_open_ports
+    - splunk_gen_conf-lic-slave
+#    - configure_LDAP
+    - configure_THP
+    - configure_file-descriptors
+    - configure_shell_user_nopass
+    - splunk_shc_init
+    - splunk_shc_config
+#    - configure_shell_access
+#    - splunk_sh_add_search-peers-stand-alone
+    - splunk_sh_add_search-peers-cluster
+    - splunk_gen_conf_auth-saml
+    - splunk_gen_restart
+#    - splunk_shc_add-member
+
+
+# - include: splunk_sh_add_search-peers-srv_mon.yml
+#   vars:
+#     uri: https://sv-prd-splx-903.sv.splunk.com
+#     mgmt_port: 8089
+
+#- include: splunk_sh_install-itsi.yml

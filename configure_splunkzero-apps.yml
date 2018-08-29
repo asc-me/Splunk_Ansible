@@ -1,0 +1,15 @@
+---
+
+- hosts: sh_valhal
+  serial: 4
+  vars:
+    user: acain
+    deploy_dir: apps
+    dev_project: zero-cm
+    apps: [ 'ITSI_Package' ]
+  roles:
+    - git-prep
+    - git_directory
+    - git_clone_multi-repo
+    - splunk_gen_app-update
+    - splunk-reboot

@@ -1,0 +1,12 @@
+---
+
+- hosts: ghost_idx
+  become: yes
+  vars:
+    user: admin
+    secret: from_russia_with_love
+    #note: secrets deployed with this script only work with alpha-numeric and some symbols, do not use ampersands
+#    cm_uri: https://sv-prd-splx-001.sv.splunk.com:8089
+  roles:
+    - splunk_idx_slave-config-secure
+    - splunk_gen_restart

@@ -1,0 +1,44 @@
+---
+
+- name: backup splunk password store
+  copy:
+    src: '{{ splunk_home }}/etc/passwd'
+    dest: '{{ splunk_home }}/etc/passwd.bak'
+    remote_src: true
+  become: yes
+  ignore_errors: yes
+
+- name: remove splunk password store
+  file:
+    path: '{{ splunk_home }}/etc/passwd'
+    state: absent
+  become: yes
+  ignore_errors: yes
+
+# seed file is defaulted to reset admin password
+- name: place splunk password seed
+  copy:
+    src: user-seed.conf
+    dest: '{{ splunk_home }}/etc/system/local/user-seed.conf'
+    owner: splunk
+    group: splunk
+    mode: 0644
+  become: yes
+
+# pulls password from the vault, must delete this file after restarting splunk
+- name: insert new password into file
+  lineinfile:
+    path: '{{ splunk_home }}/etc/system/local/user-seed.conf'
+    insertafter: EOF
+    line: 'PASSWORD = {{ pass_seed }}'
+  become: yes
+
+- name: restart splunk service
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk restart
+
+- name: remove splunk password seed file
+  file:
+    path: '{{ splunk_home }}/etc/system/local/user-seed.conf'
+    state: absent
+  become: yes

@@ -1,0 +1,42 @@
+---
+
+- name: check if the tar already exists
+  stat:
+    path: '{{ splunk_home }}/{{ tar_name }}.tar'
+  register: tar
+
+- name: check if gzip exists
+  stat:
+    path: '{{ splunk_home }}/{{ tar_name }}.tar.gz'
+  register: gzip
+  when: tar.stat.exists == false
+
+- name: remove previous compress
+  file:
+    path: '{{ item }}'
+    state: absent
+  with_items:
+    - '{{ splunk_home }}/{{ tar_name }}.tar'
+    - '{{ splunk_home }}/{{ tar_name }}.tar.gz'
+  when:
+    ( tar.stat.exists == true ) or
+    ( gzip.stat.exists == true )
+  ignore_errors: yes
+
+- name: compress dir to splunk home folder
+  become: yes
+  shell: tar c {{ splunk_home }}/{{ tar_dir_path }}/ > {{ splunk_home }}/{{ tar_name }}.tar
+
+- name: gzip the folder
+  become: yes
+  command: gzip {{ splunk_home }}/{{ tar_name }}.tar
+
+- name: prep for file upload
+  set_fact:
+    upload_file: '{{ splunk_home }}/{{ tar_name }}.tar.gz'
+    upload_type: '{{ item }}'
+  with_items:
+    - backup
+    - pstack
+    - diag
+  when:  "item in tar_name"

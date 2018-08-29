@@ -1,0 +1,22 @@
+---
+
+- hosts: nginx_hosts
+  vars:
+   user: centos
+   user_group: wheel
+   ansible_user: centos
+   become: yes 
+   proxyfile: vhosts-it.conf
+   domain_name: it.zero.splunk.com
+   stanzaname: itm
+
+   ansible_ssh_private_key_file: ~/.ssh/splunkzero-aws-main.pem.txt
+   app_packages:
+     - { project: 'zero-id', repo: 'sites-enabled', branch: 'develop'}
+   server_packages:
+     - server 10.141.248.144:8000;
+    
+  roles:
+#    - { role: configure_git-management }
+    - { role:  nginx_proxy_configs }
+   

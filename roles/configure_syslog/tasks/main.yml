@@ -1,0 +1,19 @@
+---
+
+- name: get config from app package
+  copy:
+    src: "{{ splunk_home }}/etc/apps/{{ item.repo }}/conf.d/"
+    dest: /etc/syslog-ng/conf.d/
+    remote_src: yes
+    owner: root
+    group: root
+    mode: 0644
+  with_items: '{{ app_packages }}'
+  when:
+    - "'syslog' in item.repo"
+    - '{{ host_loc }} in item.repo'
+  become: yes
+  ignore_errors: yes
+
+- name: restart syslog service
+  command: systemctl restart syslog

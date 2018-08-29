@@ -1,0 +1,14 @@
+---
+
+- name: edit sudoers file
+  become: yes
+  lineinfile: dest=/etc/sudoers insertafter=EOF line="%SG-IT-SplunkZero-PERM-{{ team }}-DEV  ALL=(ALL)       ALL"
+
+- name: edit sshd_config file
+  become: yes
+  replace: dest=/etc/ssh/sshd_config regexp='splunkx\^admins splunk' replace='splunkx^admins sg-it-splunkzero-perm-{{ team }}-dev splunk'
+
+- name: restart ssh service
+  become: yes
+  shell: systemctl restart sshd
+

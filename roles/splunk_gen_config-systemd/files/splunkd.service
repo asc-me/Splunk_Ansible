@@ -1,0 +1,22 @@
+
+ [Unit]
+ Description=Splunk Enterprise
+ After=network.target
+ Wants=network.target
+
+ [Service]
+ #errors out on orangeswirl
+ #Type=forking
+ Type=simple
+ RemainAfterExit=False
+ User=splunk
+ Group=splunk
+ LimitNOFILE=65536
+ ExecStart=/opt/splunk/bin/splunk start --accept-license --answer-yes --no-prompt
+ ExecStop=/opt/splunk/bin/splunk stop
+ PIDFile=/opt/splunk/var/run/splunk/splunkd.pid
+
+ [Install]
+ WantedBy=multi-user.target
+ # If you want to use $(systemctl [start|stop|restart] splunk) instead of splunkd ...
+ Alias=splunk.service

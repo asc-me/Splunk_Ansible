@@ -1,0 +1,9 @@
+---
+
+- hosts: sh_itsi
+  serial: 1
+  sudo: yes
+  roles:
+    - configure_THP
+    - configure_file-descriptors
+    - splunk-nonroot

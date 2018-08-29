@@ -1,0 +1,42 @@
+---
+
+# - name: remove old checkout
+#   become: yes
+#   shell: rm -rf {{ splunk_home }}/etc/{{ deploy_dir }}/*
+
+# - name: Copy repo apps to deploy directory
+#   become: yes
+#   shell: cp -r {{ splunk_home }}/repo/{{ deploy_dir }}/apps/* {{ splunk_home }}/etc/{{ deploy_dir }}/
+
+#- name: set splunk etc dir owner to splunk
+#  become: yes
+#  shell: chown -R splunk:splunk {{ splunk_home }}/etc/
+
+- name: set directory ownership to splunk
+  file:
+    path: '{{ splunk_home }}/etc/shcluster/apps'
+    state: directory
+    owner: splunk
+    group: splunk
+    recurse: yes
+  become: yes
+
+## ready for sh deploy command!
+
+- name: deploy app updates to cluster
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk apply shcluster-bundle --answer-yes -target {{ target_uri }}:{{ mgmt_port }} -preserve-lookups true -auth "{{ splunk_cred }}"
+  register: result
+  ignore_errors: yes
+
+- name: retry - deploy app updates to cluster
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk apply shcluster-bundle --answer-yes -target {{ target_uri }}:{{ mgmt_port }} -preserve-lookups true -auth "{{ splunk_cred }}"
+  when: result|failed
+  register: result
+  ignore_errors: yes
+
+- name: final retry - deploy app updates to cluster
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk apply shcluster-bundle --answer-yes -target {{ target_uri }}:{{ mgmt_port }} -preserve-lookups true -auth "{{ splunk_cred }}"
+  when: result|failed

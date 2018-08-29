@@ -1,0 +1,28 @@
+---
+
+- hosts: internal_apl
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+# application deployment variables
+    deploy_dir: master-apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_idx-internal', branch: 'master'}
+      - { project: 'zero-id', repo: '01-gold_idx', branch: 'master'}
+      - { project: 'zero-sb', repo: 'ta-fire_brigade', branch: 'master'}
+  roles:
+#    - git_directory
+#    - git_clone_single-repo
+#    - splunk_idx-cm_app-update
+#    - git_clone_multi-repo
+#    - splunk_gen_app-update
+#    - splunk_idx_enable_main
+#    - splunk_idx-cm_app-deploy
+    - configure_host_vars
+    - configure_git-management
+    - { role: splunk_idx_update-group-apps, when: result|changed }
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - { role: splunk_idx_enable_main, when: result|changed }
+    - { role: splunk_idx-cm_app-deploy, when: result|changed }

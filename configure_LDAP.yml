@@ -1,0 +1,9 @@
+---
+
+- hosts: sh_valhal
+  sudo: yes
+  vars:
+    splunk_user: root
+  roles:
+    - configure_LDAP
+#    - splunk-reboot

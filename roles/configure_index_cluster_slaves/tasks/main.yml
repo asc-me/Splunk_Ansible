@@ -1,0 +1,9 @@
+---
+
+- name: edit cluster-config
+  command: /opt/splunk/bin/splunk edit cluster-config -mode slave -master_uri https://sv-prd-spl-001.sv.splunk.com:8089 -replication_port 9887 -secret AlAImQqD$9YY -auth "{{ splunk_cred }}"
+  tags: clustering
+
+- name: restart splunk service
+  command: /opt/splunk/bin/splunk restart
+  tags: service restart

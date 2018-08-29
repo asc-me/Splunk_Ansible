@@ -1,0 +1,9 @@
+---
+
+- name: connect to shc deployer
+  command: {{ splunk_home }}/bin/splunk remove shcluster-member -mgmt_uri {{URI}}:8089 -auth "{{ splunk_cred }}"
+  tags: initialize shc
+
+- name: restart splunk
+  command: {{ splunk_home }}/bin/splunk restart
+  tags: restart splunk

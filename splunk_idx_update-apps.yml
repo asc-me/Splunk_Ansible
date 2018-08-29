@@ -1,0 +1,21 @@
+---
+
+- hosts:
+  vars:
+    user: splunk_localuser
+    user_group: wheel
+    ansible_user: splunk_localuser
+    ansible_ssh_private_key_file: ~/.ssh/splunk-server-ssh.key
+# application deployment variables
+    deploy_dir: master-apps
+    app_packages:
+      - { project: 'zero-cm', repo: 'index_apps', branch: 'stage'}
+      - { project: 'zero-id', repo: '01-gold_idx', branch: 'master'}
+      - { project: 'zero-ed', repo: 'Splunk_TA_nix', branch: 'sz-monitor'}
+  roles:
+    - configure_host_vars
+    - configure_git-management
+    - { role: splunk_idx_update-group-apps, when: result|changed }
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - { role: splunk_idx_enable_main, when: result|changed }
+    - { role: splunk_idx-cm_app-deploy, when: result|changed }

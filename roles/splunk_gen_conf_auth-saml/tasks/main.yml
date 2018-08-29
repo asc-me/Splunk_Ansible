@@ -1,0 +1,33 @@
+---
+
+- name: write saml stanza to system local auth
+  lineinfile:
+   dest: /opt/splunk/etc/system/local/authentication.conf
+   state: present
+   create: yes
+   owner: splunk
+   group: splunk
+   line: "[saml]"
+
+- name: write SLO to system local auth
+  lineinfile:
+   dest: /opt/splunk/etc/system/local/authentication.conf
+   insertafter: "[saml]"
+   line: "idpSLOUrl = https://{{ okta_domain }}/app/{{ okta_chic_key }}/slo/saml"
+
+- name: write SSO to system local auth
+  lineinfile:
+   dest: /opt/splunk/etc/system/local/authentication.conf
+   insertafter: "[saml]"
+   line: "idpSSOUrl = https://{{ okta_domain }}/app/{{ okta_chic_key }}/sso/saml"
+
+- name: write FQDN to system local auth
+  lineinfile:
+   dest: /opt/splunk/etc/system/local/authentication.conf
+   insertafter: "[saml]"
+   line: "fqdn = {{ uri }}"
+
+
+# - name: restart splunk service
+#   command: /opt/splunk/bin/splunk restart
+#   tags: restart splunk

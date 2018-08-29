@@ -1,0 +1,48 @@
+---
+
+- name: create docker group
+  group: name=docker
+
+- name: assign the docker group to {{ user }}
+  user:
+    name: '{{ user }}'
+    groups: docker
+    append: yes
+
+- name: start docker
+  command: systemctl start docker
+
+- name: edit inventory file to install on local host - use_docker_compose
+  lineinfile:
+    path: "{{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory"
+    insertafter: "# use_docker_compose=false"
+    line: use_docker_compose=true
+  with_items: "{{ app_packages }}"
+
+- name: edit inventory file to install on local host - docker_compose_dir
+  lineinfile:
+    path: "{{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory"
+    insertafter: "# docker_compose_dir=/var/lib/awx"
+    line: docker_compose_dir=/var/lib/awx
+  with_items: "{{ app_packages }}"
+
+# - name: edit inventory file to install on local host - docker_registry
+#   lineinfile:
+#     path: "{{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory"
+#     insertafter: "# docker_registry=172.30.1.1:5000"
+#     line: docker_registry=172.30.1.1:5000
+#   with_items: "{{ app_packages }}"
+#
+# - name: edit inventory file to install on local host - docker_registry_repository
+#   lineinfile:
+#     path: "{{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory"
+#     insertafter: "# docker_registry_repository=awx"
+#     line: docker_registry_repository=awx
+#   with_items: "{{ app_packages }}"
+#
+# - name: edit inventory file to install on local host - docker_registry_username
+#   lineinfile:
+#     path: "{{ clone_path }}/{{ item.project }}/{{ item.repo }}/installer/inventory"
+#     insertafter: "# docker_registry_username=developer"
+#     line: docker_registry_username=developer
+#   with_items: "{{ app_packages }}"

@@ -1,0 +1,19 @@
+---
+
+- hosts: products_apl
+  vars:
+    user: splunkzero
+    user_group: splunkzero
+# application deployment variables
+    deploy_dir: master-apps
+    app_packages:
+      - { project: 'zero-id', repo: 'zero_idx-products', branch: 'master'}
+      - { project: 'zero-id', repo: '01-gold_idx', branch: 'master'}
+      - { project: 'zero-id', repo: 'zero_auth_ldap', branch: 'master'}
+  roles:
+    - configure_host_vars
+    - configure_git-management
+    - { role: splunk_idx_update-group-apps, when: result|changed }
+    - { role: splunk_gen_update-repo-apps, when: result|changed }
+    - { role: splunk_idx_enable_main, when: result|changed }
+    - { role: splunk_idx-cm_app-deploy, when: result|changed }

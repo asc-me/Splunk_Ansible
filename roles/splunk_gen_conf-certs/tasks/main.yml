@@ -1,0 +1,9 @@
+---
+
+- name: copy the cert file to splunk auth
+  copy: 
+    src: '{{ cert_file }}'
+    dest: '{{ splunk_home }}/etc/auth/'
+    owner: splunk
+    group: splunk
+    mode: 0600

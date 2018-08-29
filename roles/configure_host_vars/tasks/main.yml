@@ -1,0 +1,65 @@
+---
+
+- name: get server location from servername
+  set_fact:
+    host_loc: "{{ inventory_hostname | regex_replace('^([^\\-]+)-\\w+-splkx-.+$', '\\1') }}"
+  when: "'-splkx-' in inventory_hostname"
+
+- name: get server location (dep.)
+  set_fact:
+    host_loc: NULL
+  when: "'-splkx-' not in inventory_hostname"
+
+- name: set host uri
+  set_fact:
+    uri: "https://{{ inventory_hostname }}"
+
+- name: see if splunk is installed
+  stat:
+    path: '{{ splunk_home }}/bin/splunk'
+  register: splunk
+  become: yes
+
+# - debug:
+#     var: splunk
+
+- name: get base apps
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk search '| rest /services/apps/local splunk_server=local | search core=1 | table title ' -auth "{{ splunk_cred }}"
+  register: splunk_apps_core
+  when: splunk.stat.exists == true
+
+# - name: set splunk base applications
+#   set_fact:
+#     base_apps: "{{ splunk_apps_core.stdout_lines | difference(item) }}"
+#   with_items:
+#     - "            title"
+#     - "-----------------------------"
+
+- name: get all installed apps
+  become: yes
+  command: ls {{ splunk_home }}/etc/apps
+  register: splunk_apps_all
+  when: splunk.stat.exists == true
+
+- name: get nonbase apps
+  become: yes
+  command: sudo -u {{ splunk_user }} {{ splunk_home }}/bin/splunk search '| rest /services/apps/local splunk_server=local | search core!=1 | table title ' -auth "{{ splunk_cred }}"
+  register: splunk_apps_noncore
+  when: splunk.stat.exists == true
+
+- name: set non-splunk base applications
+  set_fact:
+    base_apps: "{{ splunk_apps_all.stdout_lines | difference(splunk_apps_noncore.stdout_lines) }}"
+    nonbase_apps: "{{ splunk_apps_all.stdout_lines | difference(splunk_apps_core.stdout_lines) | difference(item) }}"
+  when: splunk.stat.exists == true
+# for folders that do not get considered as apps in splunk
+  with_items:
+    - user-prefs
+    - splunk_instrumentation
+
+# - debug:
+#     var: nonbase_apps
+#
+# - debug:
+#     var: base_apps

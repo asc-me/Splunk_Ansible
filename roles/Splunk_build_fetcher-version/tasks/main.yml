@@ -1,0 +1,21 @@
+# vars needed: VERSION, PRODUCT=splunk, PLAT_PKG={{ var (linux-3.10-x86_64.rpm) }}, DELIVER_AS=url
+
+---
+
+- name: post to re build fetcher
+  uri:
+    url: http://releases.splunk.com/cgi-bin/splunk_build_fetcher.py?VERSION={{ splunk_version }}&PRODUCT=splunk&PLAT_PKG={{ os_platform }}&DELIVER_AS=url
+    method: POST
+    return_content: yes
+    body_format: raw
+  register: fetcher_resp
+
+- set_fact:
+    splunk_dl: "{{ fetcher_resp.content | regex_replace('\\n') }}"
+    build_date: "{{ fetcher_resp.content | regex_replace('^.+/\\d+\\.\\d+\\.\\d+-(\\d{8}).*\\n$', '\\1') }}"
+    splunk_pkg: "{{ fetcher_resp.content | regex_replace('^.+(splunk-.+)\\n$', '\\1') }}"
+
+# use this when you want to compare system time with build time
+#- name: get system time
+#  command: date +%Y%m%d
+#  register: system_date

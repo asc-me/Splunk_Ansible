@@ -1,0 +1,36 @@
+---
+
+- name: check that backup folder exists
+  stat:
+    path: "{{ backup_path }}"
+  register: backup_present
+
+- name: backup search cluster app and user directories
+  become: yes
+#  command: cp -r {{ splunk_home }}/etc/shcluster {{ splunk_home }}/backup/
+  synchronize:
+    src: '{{ splunk_home }}/etc/shcluster'
+    dest: '{{ backup_path }}/dep-apps/'
+    rsync_path: "su -c rsync"
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True
+
+- name: backup index cluster master app directory
+  become: yes
+#  command: cp -r {{ splunk_home }}/etc/master-apps {{ splunk_home }}/backup/
+  synchronize:
+    src: '{{ splunk_home }}/etc/master-apps'
+    dest: '{{ backup_path }}/dep-apps/'
+    rsync_path: "su -c rsync"
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True
+
+- name: backup deployment apps
+  become: yes
+#  command: cp -r {{ splunk_home }}/etc/deployment-apps {{ splunk_home }}/backup/
+  synchronize:
+    src: '{{ splunk_home }}/etc/deployment-apps'
+    dest: '{{ backup_path }}/dep-apps/'
+    rsync_path: "su -c rsync"
+  delegate_to: "{{ inventory_hostname }}"
+  when: backup_present.stat.exists == True

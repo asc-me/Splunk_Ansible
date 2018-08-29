@@ -1,0 +1,6 @@
+---
+
+- hosts: stage_index
+  sudo: yes
+  roles:
+    - rotate_buckets

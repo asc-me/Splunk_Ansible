@@ -1,0 +1,6 @@
+---
+
+- name: install packaged splunk file
+  shell: curl -k -u {{ splunk_cred }} {{ uri }}:{{ mgmt_port }}/services/apps/local -d filename="true" -d name="{{ clone_path }}/packaged_apps/{{ item }}" -d update="true" -v
+  with_items: "{{packaged_apps}}"
+

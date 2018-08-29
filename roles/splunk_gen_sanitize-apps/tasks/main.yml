@@ -1,0 +1,9 @@
+---
+
+- name: clean non-base apps from app folder
+  file:
+    path: '{{ splunk_home }}/etc/apps/{{ item }}'
+    state: absent
+  become: yes
+  with_items:
+    - '{{ nonbase_apps }}'
